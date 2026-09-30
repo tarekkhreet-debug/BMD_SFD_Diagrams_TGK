@@ -1,0 +1,1629 @@
+<!--
+  مختبر تحليل الكمرات والفريمات
+  © 2026 أ.م/ طارق خريط (Tareq Khreet) — شركة المصمم الحديث للإستشارات الهندسية والتدريب
+  كلية الهندسة، جامعة عمر المختار — البيضاء، ليبيا · WhatsApp 0923755303
+  بمساهمة: م. أحمد طارق
+  جميع الحقوق محفوظة. يُمنع حذف أو تعديل بيانات المؤلف أعلاه عند إعادة توزيع هذا الملف أو أي نسخة معدّلة منه.
+-->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="أ.م/ طارق خريط (Tareq Khreet) — بمساهمة م. أحمد طارق">
+<meta name="copyright" content="© 2026 طارق خريط — جميع الحقوق محفوظة">
+<title>مختبر تحليل الكمرات — للطلبة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05080E; --panel:#0B1424; --panel2:#0F1C33; --line:#1C2C47; --line2:#2A3E60;
+  --text:#E8EEF7; --muted:#8B9BB4; --blue:#2D63C8; --blue2:#16325F;
+  --force:#FF4545; --shear:#5AA2FF; --moment:#F4B942; --defl:#9FB8DC; --ok:#3CCB8B; --bad:#FF8A3D;
+  --beam:#E8EEF7; --tens:#FF4545; --comp:#4C8DFF; --wood:#C98B4E; --conc:#A7B0BD; --rc:#6C8CB0; --steel:#5AA2FF;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 "IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;font-variant-numeric:tabular-nums}
+header{background:linear-gradient(180deg,var(--blue2),var(--panel));border-bottom:1px solid var(--line2);padding:1rem 1.5rem;display:flex;flex-wrap:wrap;gap:.6rem 2rem;align-items:flex-end;justify-content:space-between}
+header h1{margin:0;font-size:1.5rem;font-weight:700;line-height:1.3}
+header p{margin:.1rem 0 0;color:var(--muted);font-size:.88rem}
+.who{font-size:.86rem;color:var(--muted);line-height:1.75;text-align:left}
+.who b{color:var(--text);font-weight:600}
+.who a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--force)}
+main{display:grid;grid-template-columns:minmax(340px,430px) 1fr}
+@media (max-width:980px){main{grid-template-columns:1fr}}
+aside{background:var(--panel);border-left:1px solid var(--line);padding:.8rem 1.1rem 2rem}
+.results{padding:1rem 1.4rem 2.5rem;min-width:0}
+h2.sec{font-size:1.05rem;margin:1.5rem 0 .6rem;font-weight:600;display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+h2.sec small{font-size:.78rem;color:var(--muted);font-weight:400}
+aside h2{font-size:1rem;margin:.4rem 0 .6rem;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.6rem}
+button{font:inherit;font-size:.84rem;cursor:pointer;border-radius:6px;border:1px solid var(--line2);background:var(--panel2);color:var(--text);padding:.28rem .7rem}
+button:hover{border-color:var(--shear)}
+button.primary{background:var(--blue);border-color:var(--blue);font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--shear);outline-offset:1px}
+.chips button{border-radius:999px;font-size:.78rem;padding:.2rem .65rem}
+input,select{font:inherit;font-size:.92rem;color:var(--text);background:var(--bg);border:1px solid var(--line2);border-radius:5px;padding:.28rem .45rem;min-width:0}
+input[type=number]{direction:ltr;text-align:left;width:5.2rem}
+input[type=range]{width:100%;accent-color:var(--force);padding:0;border:0;background:transparent;direction:ltr}
+/* builder */
+.node{border:1px solid var(--line2);border-radius:10px;padding:.55rem .7rem;background:var(--bg)}
+.node .q{font-size:.84rem;color:var(--muted);margin-bottom:.35rem}
+.node .q b{color:var(--text);font-size:.95rem;margin-left:.3rem}
+.sups{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
+.sups button{display:flex;flex-direction:column;align-items:center;gap:.1rem;padding:.3rem .2rem;font-size:.72rem;background:transparent;color:var(--muted)}
+.sups button svg{width:40px;height:30px}
+.sups button[aria-pressed=true]{border-color:var(--force);color:var(--text);background:rgba(255,69,69,.08)}
+.span{margin:.5rem 0 .5rem 0;margin-right:1.1rem;border-right:3px solid var(--line2);padding:.2rem .9rem .5rem 0}
+.span .hd{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.span .hd b{font-size:.95rem}
+.qrow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:.45rem 0;font-size:.85rem;color:var(--muted)}
+.qrow input[type=checkbox]{accent-color:var(--blue);width:auto}
+.ld{border:1px solid var(--line);border-radius:8px;padding:.45rem .55rem;margin:.4rem 0;background:var(--panel2)}
+.ld .t{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;font-size:.84rem}
+.ld .t b{color:var(--force)}
+.ld .sl{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center;font-size:.78rem;color:var(--muted);margin-top:.3rem}
+.ld .sl output{direction:ltr;min-width:3.6rem;text-align:left;color:var(--text)}
+.x{border:0;background:transparent;color:var(--muted);font-size:1.15rem;line-height:1;padding:.1rem .35rem;margin-right:auto}
+.x:hover{color:var(--force)}
+.adds{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.3rem}
+.adds button{border-style:dashed;background:transparent;font-size:.78rem;padding:.2rem .55rem}
+.addspan{width:100%;margin-top:.7rem;padding:.55rem;border:1px dashed var(--force);background:transparent;font-weight:600;font-size:.95rem}
+.hint{font-size:.78rem;color:var(--muted);margin:.4rem 0}
+/* results */
+.err{display:none;border:1px solid var(--bad);border-right-width:4px;background:rgba(255,138,61,.08);padding:.7rem 1rem;margin-bottom:1rem;color:var(--bad)}
+.err.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;position:relative;overflow:hidden}
+.plot{position:relative;border-bottom:1px solid var(--line)}
+.plot:last-child{border-bottom:0}
+.plot h3{position:absolute;top:.4rem;right:.8rem;margin:0;font-size:.82rem;font-weight:600;color:var(--muted);pointer-events:none}
+.plot h3 i{font-style:normal;display:inline-block;width:.7rem;height:.7rem;border-radius:2px;margin-left:.35rem;vertical-align:-1px}
+.plot svg{display:block;width:100%;direction:ltr;touch-action:none}
+svg text{paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round}
+[data-drag]{cursor:ew-resize}[data-node]{cursor:pointer}
+.cursor{position:absolute;top:0;bottom:0;width:0;border-left:1px dashed var(--muted);pointer-events:none;display:none}
+.readout{position:absolute;top:.35rem;left:.6rem;background:var(--bg);border:1px solid var(--line2);border-radius:5px;padding:.2rem .6rem;font-size:.78rem;direction:ltr;pointer-events:none;display:none;white-space:nowrap;z-index:2}
+.bar{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;margin:.8rem 0}
+.bar .sp{flex:1}
+.bar label{display:flex;gap:.4rem;align-items:center;font-size:.85rem}
+.bar input{width:auto;accent-color:var(--blue)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--panel)}
+th,td{padding:.42rem .75rem;border-bottom:1px solid var(--line);text-align:right}
+tr:last-child td{border-bottom:0}
+th{font-weight:600;color:var(--muted);font-size:.76rem;background:var(--panel2)}
+td.n{direction:ltr;text-align:left;white-space:nowrap}
+td.f{color:var(--force);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+/* material */
+.mats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.mats button{padding:.9rem .5rem;font-size:1rem;font-weight:600;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.mats button small{font-weight:400;font-size:.74rem;color:var(--muted)}
+.mats button[aria-pressed=true]{border-color:var(--force);background:rgba(255,69,69,.08)}
+.report{margin-top:1rem}
+.report .lead{font-size:.95rem;border-right:3px solid var(--force);padding:.2rem .9rem .2rem 0;margin:.2rem 0 .8rem}
+.report ol{padding-right:1.2rem;margin:.4rem 0}
+.report li{margin:.35rem 0}
+.report .num{direction:ltr;unicode-bidi:isolate;font-weight:600;color:var(--text)}
+.legend{display:flex;flex-wrap:wrap;gap:.9rem;font-size:.78rem;color:var(--muted);padding:.4rem .8rem}
+.legend i{display:inline-block;width:.8rem;height:.8rem;border-radius:2px;margin-left:.3rem;vertical-align:-1px}
+.qs{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:.6rem 1rem;margin-top:.8rem}
+.qs h4{margin:.1rem 0 .3rem;font-size:.92rem}
+.qs ol{margin:.2rem 0;padding-right:1.2rem;font-size:.9rem}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.4rem 1.2rem 1rem;margin-top:1.4rem}
+.note h3{font-size:.98rem;margin:.8rem 0 .3rem;color:var(--shear)}
+.note p,.note li{font-size:.88rem;color:#C6D1E1;line-height:1.95}
+.note ul{padding-right:1.2rem;margin:.2rem 0}
+.eqi{direction:ltr;unicode-bidi:isolate;font-family:"Cambria Math","Times New Roman",serif;font-size:1.02em;color:var(--text);white-space:nowrap}
+.small{font-size:.76rem;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:1rem 1.5rem;font-size:.8rem;color:var(--muted);line-height:1.8}
+.tabbar{display:none}
+.modebar{display:flex;gap:.4rem}
+.modebar button{padding:.5rem 1rem;font-size:.92rem;font-weight:600;border-radius:8px}
+.modebar button[aria-selected=true]{background:var(--force);border-color:var(--force);color:#1a0a0a}
+.solvedbar{background:var(--panel2);border-bottom:1px solid var(--line2);padding:.7rem 1.5rem 1rem}
+.solvedbar h2{font-size:.95rem;margin:0 0 .5rem;font-weight:600}
+.solvedbar .chips button{background:var(--bg)}
+.solvedbar .chips button[aria-pressed=true]{border-color:var(--force);color:var(--text);background:rgba(255,69,69,.12)}
+#solvedExplain:empty{display:none}
+#solvedExplain{margin-top:.7rem}
+.qpick{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:.6rem .9rem;font-size:.88rem}
+.qpick select,.qpick input{margin:0 .2rem}
+@media (max-width:980px){.solvedbar{padding:.6rem 1rem .8rem}.modebar{width:100%;order:3}}
+@media (max-width:980px){
+  body{padding-bottom:64px}
+  header{padding:.9rem 1rem}header h1{font-size:1.2rem}.who{text-align:right}
+  .tabbar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:10;background:var(--panel);border-top:1px solid var(--line2);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .tabbar button{flex:1;border:0;border-radius:0;background:transparent;padding:.85rem 0;font-size:1rem;font-weight:600;color:var(--muted)}
+  .tabbar button[aria-selected=true]{color:var(--text);box-shadow:inset 0 3px 0 var(--force)}
+  body.v-in .results,body.v-in footer{display:none} body.v-out aside{display:none}
+  .results{padding:.9rem .6rem 2rem}
+}
+.student{display:none}
+@page{size:A4;margin:12mm}
+@media print{
+  :root{--bg:#fff;--panel:#fff;--panel2:#F1F4F8;--line:#C9D2DE;--line2:#9AA8BA;--text:#0A1628;--muted:#4A5A70;--blue:#16325F;--blue2:#fff;
+    --shear:#1F5FBF;--moment:#A87200;--defl:#4A6A9A;--beam:#0A1628;--force:#C80000;--tens:#C80000;--comp:#1F5FBF;--ok:#127A4A;color-scheme:light}
+  body{font-size:11.5px;padding:0}
+  header{background:none;border-bottom:2px solid #0A1628;padding:0 0 .5rem}
+  aside,.bar,.tabbar,.readout,.cursor,.err,.mats,.hint,.modebar,.solvedbar{display:none!important}
+  main{display:block}.results{padding:0;display:block!important}
+  .card,.tbl,.qs,.report>div,.student{break-inside:avoid}
+  h2.sec{break-after:avoid}
+  .note p,.note li{color:#1A2A40}
+  .plot svg{height:auto}
+  footer{display:block!important;padding:.6rem 0 0}
+  body.printing-student .student{display:block!important}
+  body.printing-student #report,body.printing-student #note,body.printing-student #fnote,body.printing-student #matsHeading{display:none!important}
+}
+</style>
+</head>
+<body class="v-in">
+<header>
+  <div>
+    <h1 id="pageTitle">مختبر تحليل الكمرات والفريمات</h1>
+    <p id="pageSub">ابنِ المنشأ عنصراً بعنصر، ضع الأحمال، واقرأ مخططات المحوري والقص والعزم وأثرها على المادة</p>
+  </div>
+  <div class="modebar" role="tablist" aria-label="نوع المنشأ">
+    <button id="modeBeam" role="tab" aria-selected="true">▬ كمرة (Beam)</button>
+    <button id="modeFrame" role="tab" aria-selected="false">⌐ فريم (Frame)</button>
+  </div>
+  <div class="who">
+    <b>أ.م/ طارق خريط</b> <span class="small">(بمساهمة: م. أحمد طارق)</span> — شركة المصمم الحديث للإستشارات الهندسية والتدريب<br>
+    كلية الهندسة، جامعة عمر المختار — البيضاء · WhatsApp <a href="https://wa.me/218923755303" target="_blank" rel="noopener"><bdi dir="ltr">0923755303</bdi></a>
+    <div class="small" style="opacity:.7">© 2026 جميع الحقوق محفوظة</div>
+  </div>
+</header>
+<div class="solvedbar">
+  <h2>مسائل محلولة من كتاب Kassimali <small class="small">(الفصل 5 — القص والعزم)</small></h2>
+  <div class="chips" id="solvedChips"></div>
+  <div id="solvedExplain"></div>
+</div>
+<main id="beamMain">
+<aside>
+  <h2>أمثلة جاهزة</h2>
+  <div class="chips" id="presets"></div>
+  <h2>ابنِ الكمرة من اليسار إلى اليمين</h2>
+  <div id="builder"></div>
+</aside>
+
+<div class="results">
+  <div class="err" id="err"></div>
+  <div class="student" id="studentInputs"></div>
+  <div class="card">
+    <div class="plot"><h3>النموذج — اسحب الأحمال بالماوس، وانقر الركيزة لتغيير نوعها</h3><svg id="gModel"></svg></div>
+  </div>
+  <div class="student" id="studentDerivation"></div>
+  <h2 class="sec">نقطة الاستعلام <small>حدد موضع x على الكمرة لقراءة Q وS وM فيه بدقة (مفيد لمسائل «أوجد القيم عند النقطتين A وB»)</small></h2>
+  <div class="qpick" id="bqpick"></div>
+  <div class="note" id="bqexplain"></div>
+  <div class="bar">
+    <label><input type="checkbox" id="tension"> رسم العزم على جهة الشد</label>
+    <span class="sp"></span>
+    <button class="primary" id="print">طباعة التقرير الكامل</button>
+    <button class="primary" id="printStudent">طباعة حل الطالب</button>
+  </div>
+  <div class="card" id="plots">
+    <div class="plot" id="rowN" style="display:none"><h3><i style="background:var(--comp)"></i>مخطط القوة المحورية N (kN) — شد(+)/ضغط(−)</h3><svg id="gN"></svg></div>
+    <div class="plot"><h3><i style="background:var(--shear)"></i>مخطط قوى القص V (kN)</h3><svg id="gV"></svg></div>
+    <div class="plot"><h3><i style="background:var(--moment)"></i>مخطط عزوم الانحناء M (kN·m)</h3><svg id="gM"></svg></div>
+    <div class="plot"><h3><i style="background:var(--defl)"></i>الشكل التقريبي للتشوه (EI ثابت)</h3><svg id="gY"></svg></div>
+    <div class="cursor" id="cursor"></div><div class="readout" id="readout"></div>
+  </div>
+
+  <h2 class="sec">النتائج الرئيسية</h2>
+  <div class="grid2">
+    <div class="tbl"><table id="tR"></table></div>
+    <div class="tbl"><table id="tK"></table></div>
+  </div>
+
+  <h2 class="sec" id="matsHeading">اختبر فهمك: ما مادة هذا العنصر؟ <small>اختر المادة لترى أثر المخططات على إجهاداتها الداخلية</small></h2>
+  <div class="mats" id="mats">
+    <button data-m="wood" aria-pressed="false">خشب<small>ليفي، ضعيف في القص</small></button>
+    <button data-m="conc" aria-pressed="false">خرسانة<small>قوية ضغطاً، ضعيفة شداً</small></button>
+    <button data-m="steel" aria-pressed="false">حديد<small>متماثل، معرض للانبعاج</small></button>
+  </div>
+  <div class="report" id="report"></div>
+
+  <div class="note" id="note"></div>
+</div>
+</main>
+
+<main id="frameMain" style="display:none">
+<aside>
+  <h2>أمثلة جاهزة</h2>
+  <div class="chips" id="fpresets"></div>
+  <h2>ابنِ الفريم ذراعاً ذراعاً من نقطة البداية</h2>
+  <div id="fbuilder"></div>
+</aside>
+<div class="results">
+  <div class="err" id="ferr"></div>
+  <div class="student" id="fStudentInputs"></div>
+  <div class="card">
+    <div class="plot"><h3>النموذج — كل ذراع بطول وزاوية من الأفقي (عكس عقارب الساعة +)</h3><svg id="fgModel"></svg></div>
+  </div>
+  <div class="student" id="fStudentDerivation"></div>
+  <div class="bar">
+    <span class="sp"></span>
+    <button class="primary" id="fprint">طباعة التقرير الكامل</button>
+    <button class="primary" id="fprintStudent">طباعة حل الطالب</button>
+  </div>
+  <h2 class="sec">نقطة الاستعلام <small>اختر الذراع والمسافة عليه لقراءة Q وS وM في تلك النقطة بالتفصيل</small></h2>
+  <div class="qpick" id="qpick"></div>
+  <div class="note" id="qexplain"></div>
+  <div class="card" id="fplots">
+    <div class="plot"><h3><i style="background:var(--comp)"></i>القوة المحورية N (kN) — شد(+)/ضغط(−)</h3><svg id="fgN"></svg></div>
+    <div class="plot"><h3><i style="background:var(--shear)"></i>قوة القص V (kN)</h3><svg id="fgV"></svg></div>
+    <div class="plot"><h3><i style="background:var(--moment)"></i>عزم الانحناء M (kN·m)</h3><svg id="fgM"></svg></div>
+  </div>
+  <h2 class="sec">النتائج الرئيسية</h2>
+  <div class="grid2">
+    <div class="tbl"><table id="ftR"></table></div>
+    <div class="tbl"><table id="ftK"></table></div>
+  </div>
+  <div class="note" id="fnote"></div>
+</div>
+</main>
+
+<footer>
+  <b>أ.م/ طارق خريط</b> <span class="small">(بمساهمة: م. أحمد طارق)</span> — شركة المصمم الحديث للإستشارات الهندسية والتدريب<br>
+  كلية الهندسة، جامعة عمر المختار — البيضاء · WhatsApp <bdi dir="ltr">0923755303</bdi> · © 2026 جميع الحقوق محفوظة
+</footer>
+<nav class="tabbar" role="tablist">
+  <button role="tab" id="tIn" aria-selected="true">البناء</button>
+  <button role="tab" id="tOut" aria-selected="false">النتائج</button>
+</nav>
+
+<script>
+// ===== Beam solver: direct stiffness method (Euler-Bernoulli), exact FER for linear loads =====
+// Units: kN, m, EI in kN·m². Sign: loads downward +, applied moment clockwise +, V up-left +, M sagging +.
+function solveBeam(model, fD, fL) {
+  const L = model.L, EI = model.EI, tol = 1e-9;
+  const fac = c => (c === 'L' ? fL : fD);
+  const pts = new Set([0, L]);
+  const clamp = x => Math.min(Math.max(+x, 0), L);
+  model.supports.forEach(s => pts.add(clamp(s.x)));
+  model.hinges.forEach(h => pts.add(clamp(h.x)));
+  model.loads.forEach(ld => {
+    if (ld.type === 'P' || ld.type === 'M') pts.add(clamp(ld.x));
+    else { pts.add(clamp(ld.a)); pts.add(clamp(ld.b)); }
+  });
+  let xs = [...pts].sort((a, b) => a - b);
+  const nodesX = [];
+  xs.forEach(x => { if (!nodesX.length || x - nodesX[nodesX.length - 1] > 1e-7) nodesX.push(x); });
+  const nidx = x => { let best = 0; nodesX.forEach((nx, i) => { if (Math.abs(nx - x) < Math.abs(nodesX[best] - x)) best = i; }); return best; };
+  const nN = nodesX.length, nE = nN - 1;
+  // DOFs
+  let nd = 0; const vD = [], thL = [], thR = [];
+  const hingeAt = new Set(model.hinges.map(h => nidx(clamp(h.x))));
+  for (let i = 0; i < nN; i++) {
+    vD[i] = nd++;
+    const t = nd++; thL[i] = t; thR[i] = t;
+    if (hingeAt.has(i) && i > 0 && i < nN - 1) thR[i] = nd++;
+  }
+  const K = Array.from({ length: nd }, () => new Float64Array(nd));
+  const F = new Float64Array(nd);
+  const elems = [];
+  for (let e = 0; e < nE; e++) {
+    const xi = nodesX[e], xj = nodesX[e + 1], l = xj - xi, xm = (xi + xj) / 2;
+    let w1 = 0, w2 = 0;
+    model.loads.forEach(ld => {
+      if (ld.type !== 'W') return;
+      const a = Math.min(ld.a, ld.b), b = Math.max(ld.a, ld.b);
+      if (b - a < 1e-9 || xm < a || xm > b) return;
+      const q1 = ld.a <= ld.b ? ld.w1 : ld.w2, q2 = ld.a <= ld.b ? ld.w2 : ld.w1;
+      const at = x => q1 + (q2 - q1) * (x - a) / (b - a);
+      w1 += fac(ld.c) * at(xi); w2 += fac(ld.c) * at(xj);
+    });
+    const dofs = [vD[e], thR[e], vD[e + 1], thL[e + 1]];
+    const k = EI / (l * l * l);
+    const ke = [[12, 6 * l, -12, 6 * l], [6 * l, 4 * l * l, -6 * l, 2 * l * l], [-12, -6 * l, 12, -6 * l], [6 * l, 2 * l * l, -6 * l, 4 * l * l]].map(r => r.map(v => v * k));
+    const fer = [7 * w1 * l / 20 + 3 * w2 * l / 20, w1 * l * l / 20 + w2 * l * l / 30, 3 * w1 * l / 20 + 7 * w2 * l / 20, -(w1 * l * l / 30 + w2 * l * l / 20)];
+    for (let a = 0; a < 4; a++) { F[dofs[a]] -= fer[a]; for (let b = 0; b < 4; b++) K[dofs[a]][dofs[b]] += ke[a][b]; }
+    elems.push({ xi, xj, l, w1, w2, dofs, ke, fer });
+  }
+  model.loads.forEach(ld => {
+    const i = nidx(clamp(ld.x));
+    if (ld.type === 'P') F[vD[i]] -= fac(ld.c) * ld.P;
+    if (ld.type === 'M') F[thL[i]] -= fac(ld.c) * ld.M; // clockwise + (applied to left side at a hinge)
+  });
+  const fixed = new Array(nd).fill(false);
+  const supAt = {};
+  model.supports.forEach(s => {
+    const i = nidx(clamp(s.x)); supAt[i] = s.type;
+    fixed[vD[i]] = true;
+    if (s.type === 'fixed') { fixed[thL[i]] = true; fixed[thR[i]] = true; }
+  });
+  const free = [...Array(nd).keys()].filter(d => !fixed[d]);
+  const n = free.length;
+  const A = free.map(r => free.map(c => K[r][c])), rhs = free.map(r => F[r]);
+  let scale = 0; A.forEach((r, i) => scale = Math.max(scale, Math.abs(r[i])));
+  for (let c = 0; c < n; c++) {
+    let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+    if (Math.abs(A[p][c]) < 1e-10 * (scale || 1)) return { error: 'unstable' };
+    [A[c], A[p]] = [A[p], A[c]];[rhs[c], rhs[p]] = [rhs[p], rhs[c]];
+    for (let r = c + 1; r < n; r++) { const m = A[r][c] / A[c][c]; if (!m) continue; for (let k2 = c; k2 < n; k2++) A[r][k2] -= m * A[c][k2]; rhs[r] -= m * rhs[c]; }
+  }
+  const sol = new Float64Array(n);
+  for (let r = n - 1; r >= 0; r--) { let s = rhs[r]; for (let c = r + 1; c < n; c++) s -= A[r][c] * sol[c]; sol[r] = s / A[r][r]; }
+  const d = new Float64Array(nd); free.forEach((g, i) => d[g] = sol[i]);
+  // reactions
+  const reactions = Object.keys(supAt).map(k2 => {
+    const i = +k2; const Kd = dd => K[dd].reduce((s, v, j) => s + v * d[j], 0) - F[dd];
+    const R = Kd(vD[i]);
+    let M = null; if (supAt[i] === 'fixed') { M = Kd(thL[i]); if (thR[i] !== thL[i]) M += Kd(thR[i]); M = -M; } // report clockwise +
+    return { x: nodesX[i], type: supAt[i], R, M };
+  }).sort((a, b) => a.x - b.x);
+  // sampling
+  const samples = [];
+  elems.forEach((el, ei) => {
+    const de = el.dofs.map(g => d[g]);
+    const f = el.fer.map((v, a) => v + el.ke[a].reduce((s, kv, b) => s + kv * de[b], 0));
+    const Vi = f[0], Mi = f[1], { l, w1, w2 } = el, dw = w2 - w1;
+    const N = Math.max(8, Math.ceil(80 * l / L));
+    const xsE = []; for (let s = 0; s <= N; s++) xsE.push(l * s / N);
+    // exact zero-shear points (moment extrema): Vi - w1 x - dw x²/(2l) = 0
+    const roots = [];
+    if (Math.abs(dw) < 1e-12) { if (Math.abs(w1) > 1e-12) roots.push(Vi / w1); }
+    else { const a2 = -dw / (2 * l), b2 = -w1, c2 = Vi, D = b2 * b2 - 4 * a2 * c2; if (D >= 0) { roots.push((-b2 + Math.sqrt(D)) / (2 * a2), (-b2 - Math.sqrt(D)) / (2 * a2)); } }
+    roots.forEach(r => { if (r > 1e-9 && r < l - 1e-9) xsE.push(r); });
+    xsE.sort((a, b) => a - b);
+    xsE.forEach((x, s) => {
+      const ext = roots.some(r => Math.abs(r - x) < 1e-12) || s === 0 || s === xsE.length - 1;
+      const V = Vi - w1 * x - dw * x * x / (2 * l);
+      const M = -Mi + Vi * x - w1 * x * x / 2 - dw * x * x * x / (6 * l);
+      const y = de[0] + de[1] * x + (-Mi * x * x / 2 + Vi * x ** 3 / 6 - w1 * x ** 4 / 24 - dw * x ** 5 / (120 * l)) / EI;
+      samples.push({ x: el.xi + x, V, M, y, e: ei, key: ext, end: s === 0 ? 'i' : (s === xsE.length - 1 ? 'j' : '') });
+    });
+  });
+  return { nodesX, reactions, samples, elems };
+}
+
+
+</script>
+<script>
+const $ = id => document.getElementById(id);
+const fmt = (v, d = 2) => { if (!isFinite(v)) return '—'; const r = Math.abs(v) < 5e-10 ? 0 : v; return r.toFixed(d); };
+const LET = i => String.fromCharCode(65 + i);
+const SUPN = { free: 'حرة', pin: 'مفصلية', roller: 'منزلقة', fixed: 'وثاقة' };
+const clone = o => JSON.parse(JSON.stringify(o));
+const PRESETS = {
+  'بحران + بروز حر': { start: 'pin', spans: [
+    { L: 5, end: 'roller', hinge: false, hx: 2.5, loads: [{ t: 'U', a: 0, b: 5, v: 12 }] },
+    { L: 4, end: 'roller', hinge: false, hx: 2, loads: [{ t: 'P', x: 2, v: 30 }] },
+    { L: 2, end: 'free', hinge: false, hx: 1, loads: [{ t: 'P', x: 2, v: 10 }] }] },
+  'بسيطة': { start: 'pin', spans: [{ L: 6, end: 'roller', hinge: false, hx: 3, loads: [{ t: 'U', a: 0, b: 6, v: 10 }] }] },
+  'ظفر': { start: 'fixed', spans: [{ L: 3, end: 'free', hinge: false, hx: 1.5, loads: [{ t: 'T', a: 0, b: 3, v: 15, peak: 'start' }, { t: 'P', x: 3, v: 8 }] }] },
+  'وثاقة + منزلقة': { start: 'fixed', spans: [{ L: 6, end: 'roller', hinge: false, hx: 3, loads: [{ t: 'U', a: 0, b: 6, v: 10 }] }] },
+  'جربر': { start: 'fixed', spans: [{ L: 6, end: 'roller', hinge: true, hx: 2, loads: [{ t: 'U', a: 0, b: 6, v: 10 }] }, { L: 4, end: 'roller', hinge: false, hx: 2, loads: [{ t: 'P', x: 2, v: 25 }] }] },
+  'عزم مركز': { start: 'pin', spans: [{ L: 6, end: 'roller', hinge: false, hx: 3, loads: [{ t: 'M', x: 2, v: 30 }] }] }
+};
+let state = { ...clone(PRESETS['بحران + بروز حر']), mat: null, tension: false };
+try { const s = localStorage.getItem('beamLab_v1'); if (s) state = { ...state, ...JSON.parse(s) }; } catch (e) {}
+const save = () => { try { localStorage.setItem('beamLab_v1', JSON.stringify(state)); } catch (e) {} };
+const num = (v, d = 0) => { const n = parseFloat(v); return isFinite(n) ? n : d; };
+const x0 = j => state.spans.slice(0, j).reduce((a, s) => a + s.L, 0);
+const totalL = () => x0(state.spans.length);
+const nodeType = i => i === 0 ? state.start : state.spans[i - 1].end;
+const setNode = (i, t) => { if (i === 0) state.start = t; else state.spans[i - 1].end = t; };
+
+// ---------- support icons ----------
+function supIcon(t) {
+  const s = '#fff', c = 'currentColor';
+  const beam = `<line x1="4" y1="10" x2="36" y2="10" stroke="${c}" stroke-width="3"/>`;
+  if (t === 'free') return `<svg viewBox="0 0 40 30">${beam}<circle cx="36" cy="10" r="0"/><text x="20" y="26" font-size="9" fill="${c}" text-anchor="middle" style="stroke:none">—</text></svg>`;
+  if (t === 'fixed') return `<svg viewBox="0 0 40 30"><line x1="12" y1="10" x2="36" y2="10" stroke="${c}" stroke-width="3"/><line x1="12" y1="1" x2="12" y2="27" stroke="${c}" stroke-width="2.5"/>${[3, 9, 15, 21].map(y => `<line x1="12" y1="${y + 6}" x2="6" y2="${y}" stroke="${c}"/>`).join('')}</svg>`;
+  const tri = `<polygon points="20,11 13,22 27,22" fill="none" stroke="${c}" stroke-width="1.6"/>`;
+  if (t === 'pin') return `<svg viewBox="0 0 40 30">${beam}${tri}<line x1="10" y1="24" x2="30" y2="24" stroke="${c}"/>${[12, 17, 22, 27].map(x => `<line x1="${x}" y1="28" x2="${x + 3}" y2="24" stroke="${c}" stroke-width=".8"/>`).join('')}</svg>`;
+  return `<svg viewBox="0 0 40 30">${beam}${tri}<circle cx="16" cy="25" r="2.3" fill="none" stroke="${c}"/><circle cx="24" cy="25" r="2.3" fill="none" stroke="${c}"/><line x1="10" y1="28.5" x2="30" y2="28.5" stroke="${c}"/></svg>`;
+}
+
+// ---------- builder ----------
+function nodeCard(i) {
+  const d = document.createElement('div'); d.className = 'node';
+  const n = state.spans.length;
+  const q = i === 0 ? 'ما نوع الركيزة في بداية الكمرة (الطرف الأيسر)؟' : i === n ? `ما الذي يوجد في نهاية البحر ${i}؟` : `ما الذي يوجد بين البحر ${i} والبحر ${i + 1}؟`;
+  d.innerHTML = `<div class="q"><b>النقطة ${LET(i)}</b>${q}</div>`;
+  const g = document.createElement('div'); g.className = 'sups';
+  ['free', 'pin', 'roller', 'fixed'].forEach(t => {
+    const b = document.createElement('button'); b.setAttribute('aria-pressed', nodeType(i) === t);
+    b.innerHTML = supIcon(t) + (t === 'free' ? (i === 0 || i === n ? 'طرف حر' : 'بدون ركيزة') : SUPN[t]);
+    b.onclick = () => { setNode(i, t); build(); run(); }; g.appendChild(b);
+  });
+  d.appendChild(g); return d;
+}
+function slider(label, val, max, on, id) {
+  const w = document.createElement('div'); w.className = 'sl';
+  const l = document.createElement('span'); l.textContent = label;
+  const r = document.createElement('input'); r.type = 'range'; r.min = 0; r.max = max; r.step = 0.05; r.value = val; if (id) r.id = id;
+  const o = document.createElement('output'); o.textContent = fmt(val) + ' m';
+  r.addEventListener('input', () => { on(+r.value); o.textContent = fmt(+r.value) + ' m'; run(); });
+  w.append(l, r, o); return w;
+}
+function numIn(val, on, step = 1, onchange) {
+  const i = document.createElement('input'); i.type = 'number'; i.step = step; i.value = val;
+  i.addEventListener('input', () => { on(num(i.value, val)); run(); }); if (onchange) i.addEventListener('change', onchange); return i;
+}
+function loadCard(sp, j, ld, k) {
+  const d = document.createElement('div'); d.className = 'ld';
+  const t = document.createElement('div'); t.className = 't';
+  const names = { P: 'حمل مركز', U: 'حمل منتظم', T: 'حمل مثلثي', M: 'عزم مركز' }, units = { P: 'kN', U: 'kN/m', T: 'kN/m', M: 'kN·m' };
+  t.innerHTML = `<b>${names[ld.t]}</b>`;
+  t.append(numIn(ld.v, v => ld.v = v), document.createTextNode(ld.t === 'T' ? 'kN/m (القمة)' : units[ld.t]));
+  if (ld.t === 'M') { const s = document.createElement('select'); s.innerHTML = '<option value="1">↻ مع عقارب الساعة</option><option value="-1">↺ عكسها</option>'; s.value = ld.v >= 0 ? '1' : '-1'; ld.v = Math.abs(ld.v) * +s.value; t.lastChild.remove(); t.append(document.createTextNode('kN·m'), s); s.onchange = () => { ld.v = Math.abs(ld.v) * +s.value; build(); run(); }; t.querySelector('input').value = Math.abs(ld.v); t.querySelector('input').oninput = e => { ld.v = Math.abs(num(e.target.value)) * +s.value; run(); }; }
+  if (ld.t === 'T') { const s = document.createElement('select'); s.innerHTML = '<option value="end">يزداد نحو اليمين ◺</option><option value="start">يزداد نحو اليسار ◿</option>'; s.value = ld.peak; s.onchange = () => { ld.peak = s.value; run(); }; t.append(s); }
+  const x = document.createElement('button'); x.className = 'x'; x.textContent = '×'; x.title = 'حذف الحمل'; x.setAttribute('aria-label', 'حذف الحمل'); x.onclick = () => { sp.loads.splice(k, 1); build(); run(); }; t.append(x);
+  d.appendChild(t);
+  if (ld.t === 'P') {
+    const ir = document.createElement('div'); ir.className = 'qrow'; ir.style.margin = '.3rem 0 0';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!ld.incl; cb.id = `incl-${j}-${k}`;
+    const lb = document.createElement('label'); lb.htmlFor = cb.id; lb.textContent = 'حمل مائل (له مركبة أفقية)؟';
+    cb.onchange = () => { ld.incl = cb.checked; if (ld.incl && ld.ang == null) { ld.ang = 45; ld.hdir = 1; ld.vdir = 1; } build(); run(); };
+    ir.append(cb, lb); d.appendChild(ir);
+    if (ld.incl) {
+      const ar = document.createElement('div'); ar.className = 'sl'; ar.style.gridTemplateColumns = 'auto auto auto auto';
+      const al = document.createElement('span'); al.textContent = 'الزاوية من الأفقي';
+      const ain = document.createElement('input'); ain.type = 'number'; ain.min = 0; ain.max = 90; ain.step = 5; ain.value = ld.ang ?? 45;
+      ain.oninput = () => { ld.ang = Math.min(90, Math.max(0, num(ain.value, 45))); run(); };
+      const hs = document.createElement('select'); hs.innerHTML = '<option value="1">أفقياً →</option><option value="-1">أفقياً ←</option>'; hs.value = ld.hdir ?? 1; hs.onchange = () => { ld.hdir = +hs.value; run(); };
+      const vs = document.createElement('select'); vs.innerHTML = '<option value="1">رأسياً ↓</option><option value="-1">رأسياً ↑</option>'; vs.value = ld.vdir ?? 1; vs.onchange = () => { ld.vdir = +vs.value; run(); };
+      ar.append(al, ain, hs, vs); d.appendChild(ar);
+      const hint = document.createElement('p'); hint.className = 'hint'; hint.style.margin = '.25rem 0 0';
+      hint.textContent = 'مثال الكتاب: قوة 100kN بزاوية 60° من الأفقي ⇐ مركبتها الرأسية = 100sin60°، والأفقية = 100cos60°.';
+      d.appendChild(hint);
+    }
+  }
+  if (ld.t === 'P' || ld.t === 'M') d.appendChild(slider('المسافة من بداية البحر', ld.x, sp.L, v => ld.x = v, `sl-${j}-${k}`));
+  else { d.appendChild(slider('يبدأ عند', ld.a, sp.L, v => { ld.a = Math.min(v, ld.b - 0.05); }, `sa-${j}-${k}`)); d.appendChild(slider('ينتهي عند', ld.b, sp.L, v => { ld.b = Math.max(v, ld.a + 0.05); }, `sb-${j}-${k}`)); }
+  return d;
+}
+function spanCard(j) {
+  const sp = state.spans[j], d = document.createElement('div'); d.className = 'span';
+  const hd = document.createElement('div'); hd.className = 'hd';
+  hd.innerHTML = `<b>البحر ${j + 1}</b><span class="small">من ${LET(j)} إلى ${LET(j + 1)}</span>`;
+  if (state.spans.length > 1) { const x = document.createElement('button'); x.className = 'x'; x.textContent = '×'; x.title = 'حذف البحر'; x.setAttribute('aria-label', 'حذف البحر'); x.onclick = () => { state.spans.splice(j, 1); build(); run(); }; hd.append(x); }
+  d.appendChild(hd);
+  const r1 = document.createElement('div'); r1.className = 'qrow'; r1.append('كم طول هذا البحر؟', numIn(sp.L, v => sp.L = Math.max(0.2, v), 0.5, () => build()), 'm'); d.appendChild(r1);
+  const r2 = document.createElement('div'); r2.className = 'qrow';
+  const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = sp.hinge; cb.id = 'h' + j;
+  const lb = document.createElement('label'); lb.htmlFor = cb.id; lb.textContent = 'هل يوجد مفصل داخلي في هذا البحر؟';
+  cb.onchange = () => { sp.hinge = cb.checked; build(); run(); }; r2.append(cb, lb); d.appendChild(r2);
+  if (sp.hinge) { const w = document.createElement('div'); w.className = 'ld'; w.appendChild(slider('موقع المفصل من بداية البحر', sp.hx, sp.L, v => sp.hx = Math.min(Math.max(v, 0.05), sp.L - 0.05), `sh-${j}`)); d.appendChild(w); }
+  sp.loads.forEach((ld, k) => d.appendChild(loadCard(sp, j, ld, k)));
+  const ad = document.createElement('div'); ad.className = 'adds';
+  [['P', '+ مركز'], ['U', '+ منتظم'], ['T', '+ مثلثي'], ['M', '+ عزم']].forEach(([t, l]) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => {
+    const L = sp.L; sp.loads.push(t === 'P' ? { t, x: +(L / 2).toFixed(2), v: 20 } : t === 'M' ? { t, x: +(L / 2).toFixed(2), v: 10 } : t === 'U' ? { t, a: 0, b: L, v: 10 } : { t, a: 0, b: L, v: 10, peak: 'end' }); build(); run(); }; ad.appendChild(b); });
+  d.appendChild(ad); return d;
+}
+function build() {
+  const B = $('builder'); B.innerHTML = '';
+  B.appendChild(nodeCard(0));
+  state.spans.forEach((s, j) => { B.appendChild(spanCard(j)); B.appendChild(nodeCard(j + 1)); });
+  const add = document.createElement('button'); add.className = 'addspan'; add.textContent = '+ إضافة بحر جديد';
+  add.onclick = () => { state.spans.push({ L: 4, end: 'roller', hinge: false, hx: 2, loads: [] }); build(); run(); }; B.appendChild(add);
+  const h = document.createElement('p'); h.className = 'hint'; h.textContent = 'اختر «بدون ركيزة» أو «طرف حر» لنقطة نهاية لتحصل على بروز (ظفر). المواضع كلها تقاس من بداية البحر نفسه.'; B.appendChild(h);
+  $('tension').checked = state.tension;
+  document.querySelectorAll('#mats button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === state.mat));
+  bBuildQPick();
+}
+function bBuildQPick() {
+  const L = totalL(), q = $('bqpick'); q.innerHTML = '';
+  state.qx = Math.min(Math.max(state.qx ?? 0, 0), L);
+  const sl = document.createElement('input'); sl.type = 'range'; sl.min = 0; sl.max = L; sl.step = 0.01; sl.value = state.qx; sl.style.width = '10rem';
+  const out = document.createElement('output'); out.textContent = fmt(state.qx) + ' m';
+  sl.oninput = () => { state.qx = +sl.value; out.textContent = fmt(state.qx) + ' m'; bRunQ(); };
+  q.append('عند x = ', sl, out, ' من الطرف الأيسر');
+  (state.markers || []).forEach(mk => { const b = document.createElement('button'); b.textContent = `⇒ النقطة ${mk.label} (x=${fmt(mk.x)})`; b.onclick = () => { state.qx = mk.x; sl.value = mk.x; out.textContent = fmt(mk.x) + ' m'; bRunQ(); }; q.appendChild(b); });
+}
+function bRunQ() {
+  if (!last || !last.samples) return;
+  const S = last.samples, x = state.qx ?? 0;
+  let best = S[0]; S.forEach(s => { if (Math.abs(s.x - x) < Math.abs(best.x - x)) best = s; });
+  const hasAxial = last.hasAxial;
+  let h = `<h3>عند x = ${fmt(x)} m</h3>
+    <div class="tbl"><table><tr>${hasAxial ? '<th>القوة المحورية N</th>' : ''}<th>قوة القص V</th><th>عزم الانحناء M</th></tr>
+    <tr>${hasAxial ? `<td class="n f">${fmt(best.N ?? 0)} kN ${(best.N ?? 0) < 0 ? '(ضغط)' : (best.N ?? 0) > 0 ? '(شد)' : ''}</td>` : ''}<td class="n f">${fmt(best.V)} kN</td><td class="n f">${fmt(best.M)} kN·m</td></tr></table></div>`;
+  if (last.model) {
+    const d = beamQueryDerivation(last.model, last.reactions || [], last.AX, x);
+    if (d.rows.length) {
+      h += `<p class="small">طريقة المقاطع — الأجزاء الواقعة يسار x=${fmt(x)} فقط (تشمل ردود الأفعال):</p>
+      <div class="tbl"><table><tr><th>البند</th><th>مساهمة V</th><th>مساهمة M</th></tr>
+      ${d.rows.map(rr => `<tr><td>${rr.label}</td><td class="n">${fmt(rr.dV)}</td><td class="n">${fmt(rr.dM)}</td></tr>`).join('')}
+      <tr><td><b>المجموع</b></td><td class="n"><b>${fmt(d.V)}</b></td><td class="n"><b>${fmt(d.M)}</b></td></tr></table></div>`;
+    } else {
+      h += `<p class="small">لا يوجد شيء يسار x=${fmt(x)} (طرف حر)، فـ V=M=0 هناك.</p>`;
+    }
+  }
+  $('bqexplain').innerHTML = h;
+}
+Object.keys(PRESETS).forEach(n => { const b = document.createElement('button'); b.textContent = n; b.onclick = () => { Object.assign(state, clone(PRESETS[n])); build(); run(); if (typeof clearSolvedUI === 'function') clearSolvedUI(); }; $('presets').appendChild(b); });
+
+// ---------- model ----------
+function toModel() {
+  const sup = [], hinges = [], loads = [], axial = [];
+  for (let i = 0; i <= state.spans.length; i++) { const t = nodeType(i); if (t !== 'free') sup.push({ x: x0(i), type: t }); }
+  state.spans.forEach((sp, j) => {
+    const X = x0(j), L = sp.L, cl = v => Math.min(Math.max(v, 0), L);
+    if (sp.hinge) hinges.push({ x: X + Math.min(Math.max(sp.hx, 0.05), L - 0.05) });
+    sp.loads.forEach(ld => {
+      if (ld.t === 'P') {
+        if (ld.incl) {
+          const rad = (ld.ang ?? 90) * Math.PI / 180, mag = Math.abs(ld.v);
+          const Fy = mag * Math.sin(rad) * (ld.vdir ?? 1), Fx = mag * Math.cos(rad) * (ld.hdir ?? 1);
+          loads.push({ type: 'P', x: X + cl(ld.x), P: Fy, c: 'D' });
+          if (Math.abs(Fx) > 1e-9) axial.push({ x: X + cl(ld.x), H: Fx });
+        } else loads.push({ type: 'P', x: X + cl(ld.x), P: ld.v, c: 'D' });
+      }
+      else if (ld.t === 'M') loads.push({ type: 'M', x: X + cl(ld.x), M: ld.v, c: 'D' });
+      else { let a = cl(Math.min(ld.a, ld.b)), b = cl(Math.max(ld.a, ld.b)); if (b - a < 1e-6) return;
+        const w1 = ld.t === 'U' ? ld.v : ld.peak === 'start' ? ld.v : 0, w2 = ld.t === 'U' ? ld.v : ld.peak === 'start' ? 0 : ld.v;
+        loads.push({ type: 'W', a: X + a, b: X + b, w1, w2, c: 'D' }); }
+    });
+  });
+  return { L: totalL(), EI: 1000, supports: sup, hinges, loads, axial };
+}
+// ---------- axial force N(x): simple statics, decoupled from bending ----------
+// Convention: Fx>0 = rightward. Anchor = first support (left→right) of type pin/fixed that resists horizontal motion.
+// N(x) tension+ = -(sum of rightward Fx, incl. anchor reaction, strictly to the left of x). Piecewise-constant.
+function computeAxial(model) {
+  const sup = model.supports.filter(s => s.type === 'pin' || s.type === 'fixed').sort((a, b) => a.x - b.x);
+  const events = model.axial.map(a => ({ x: a.x, H: a.H }));
+  const sumFx = events.reduce((s, e) => s + e.H, 0);
+  let anchor = null, warn = null;
+  if (sup.length) { anchor = sup[0].x; events.push({ x: anchor, H: -sumFx }); }
+  else if (Math.abs(sumFx) > 1e-6) warn = 'توجد مركبة أفقية صافية = ' + fmt(sumFx) + ' kN ولا توجد ركيزة (مفصلية/وثاقة) تقاومها أفقياً — المنشأ غير مستقر أفقياً.';
+  events.sort((a, b) => a.x - b.x);
+  const Nat = x => { let s = 0; events.forEach(e => { if (e.x < x - 1e-9) s += e.H; }); return -s; };
+  return { Nat, anchor, warn, sumFx };
+}
+
+// ==================================================================================
+// ===== طباعة حل الطالب: اشتقاق ردود الأفعال والقوى الداخلية خطوة بخطوة =====
+// النطاق الحالي: الحالات المحددة استاتيكياً الشائعة فقط (بلا مفاصل داخلية):
+//   (أ) وثاقة واحدة (كمرة بروز)   (ب) مفصلية + منزلقة (كمرة بسيطة)
+// أي توزيع آخر (بحور متعددة الركائز، أو بمفصل داخلي) يعرض الجدول والمخططات دون اشتقاق تفصيلي.
+// ==================================================================================
+function nodeOf_(x) { for (let i = 0; i <= state.spans.length; i++) if (Math.abs(x0(i) - x) < 1e-6) return LET(i); return '?'; }
+function classifyBeamCase(model) {
+  if (model.hinges.length) return null;
+  const fixed = model.supports.filter(s => s.type === 'fixed'), pins = model.supports.filter(s => s.type === 'pin'), rollers = model.supports.filter(s => s.type === 'roller');
+  if (fixed.length === 1 && pins.length === 0 && rollers.length === 0) return { kind: 'cantilever', fixed: fixed[0] };
+  if (fixed.length === 0 && pins.length === 1 && rollers.length === 1) return { kind: 'simple', pin: pins[0], roller: rollers[0] };
+  return null;
+}
+// قائمة الأحمال كبنود جاهزة للاشتقاق: أحمال رأسية (P موجب لأسفل) وعزوم مركزة (M موجب مع عقارب الساعة)
+function beamLoadTerms(model) {
+  const terms = [];
+  model.loads.forEach(l => {
+    if (l.type === 'P') terms.push({ label: `حمل مركز ${fmt(Math.abs(l.P))} kN عند x=${fmt(l.x)} m`, P: l.P, x: l.x });
+    else if (l.type === 'W') {
+      const Rmag = (l.w1 + l.w2) / 2 * (l.b - l.a);
+      const xbar = Math.abs(l.w1 + l.w2) < 1e-9 ? (l.a + l.b) / 2 : l.a + (l.b - l.a) * (l.w1 + 2 * l.w2) / (3 * (l.w1 + l.w2));
+      terms.push({ label: `محصلة حمل موزّع (${fmt(l.w1)}→${fmt(l.w2)} kN/m) على [${fmt(l.a)}, ${fmt(l.b)}] m = ${fmt(Rmag)} kN عند مركز ثقله x=${fmt(xbar)} m`, P: Rmag, x: xbar });
+    } else if (l.type === 'M') terms.push({ label: `عزم مركز ${fmt(Math.abs(l.M))} kN·m (${l.M > 0 ? 'مع' : 'عكس'} عقارب الساعة) عند x=${fmt(l.x)} m`, couple: true, v: l.M });
+  });
+  return terms;
+}
+function beamReactionDerivation(model) {
+  const cs = classifyBeamCase(model), terms = beamLoadTerms(model);
+  if (!cs) return `<p class="small">هذا التوزيع من الركائز${model.hinges.length ? ' (يحتوي مفصلاً داخلياً)' : ''} أعمّ من الحالات المشمولة بالاشتقاق التفصيلي حالياً (وثاقة واحدة، أو مفصلية+منزلقة). ردود الأفعال في الجدول أعلاه محسوبة ودقيقة رياضياً، لكن دون سرد خطواتها هنا.</p>`;
+  if (cs.kind === 'cantilever') {
+    const xf = cs.fixed.x; let momCCW = 0, sumP = 0; const lines = [];
+    terms.forEach(t => {
+      if (t.couple) { const c = -t.v; momCCW += c; lines.push(`<tr><td>${t.label}</td><td class="n">${fmt(c)}</td></tr>`); }
+      else { const arm = xf - t.x, c = arm * t.P; momCCW += c; sumP += t.P; lines.push(`<tr><td>${t.label}: الذراع = (${fmt(xf)}−${fmt(t.x)}) = ${fmt(arm)} m</td><td class="n">${fmt(c)}</td></tr>`); }
+    });
+    const Mfixed = momCCW;
+    return `<p>كمرة بروز (ظفر) بوثاقة واحدة عند ${nodeOf_(xf)}: تُحل الردود الثلاث مباشرة من معادلات الاتزان دون معادلة إضافية.</p>
+      <p><b>ΣFy = 0</b> ⇒ <span class="eqi">R = ΣP = ${fmt(sumP)} kN</span></p>
+      <p><b>ΣM حول الوثاقة ${nodeOf_(xf)} = 0</b> (عكس عقارب الساعة موجب لمجموع عزوم الأحمال):</p>
+      <div class="tbl"><table><tr><th>البند</th><th>المساهمة (kN·m)</th></tr>${lines.join('')}
+      <tr><td><b>المجموع</b></td><td class="n"><b>${fmt(momCCW)}</b></td></tr></table></div>
+      <p>عزم الوثاقة يوازن هذا المجموع بمقدار مساوٍ وباتجاه معاكس: <span class="eqi">M<sub>الوثاقة</sub> = ${fmt(Math.abs(Mfixed))} kN·m</span> (${Mfixed > 0 ? 'مع' : 'عكس'} عقارب الساعة).</p>`;
+  }
+  const xp = cs.pin.x, xr = cs.roller.x; let momCCW = 0, sumP = 0; const lines = [];
+  terms.forEach(t => {
+    if (t.couple) { const c = -t.v; momCCW += c; lines.push(`<tr><td>${t.label}</td><td class="n">${fmt(c)}</td></tr>`); }
+    else { const arm = xp - t.x, c = arm * t.P; momCCW += c; sumP += t.P; lines.push(`<tr><td>${t.label}: الذراع من ${nodeOf_(xp)} = (${fmt(xp)}−${fmt(t.x)}) = ${fmt(arm)} m</td><td class="n">${fmt(c)}</td></tr>`); }
+  });
+  const Rroller = momCCW / (xp - xr), Rpin = sumP - Rroller;
+  let h = `<p><b>الخطوة 1 — ΣM حول ${nodeOf_(xp)} (المفصلية) = 0</b> (عكس عقارب الساعة موجب)، فتُحرَّر معادلة العزم من ردَّي فعل ${nodeOf_(xp)} (لا ذراع لهما حولها):</p>
+    <div class="tbl"><table><tr><th>البند</th><th>المساهمة (kN·m)</th></tr>${lines.join('')}
+    <tr><td><b>مجموع عزوم الأحمال</b></td><td class="n"><b>${fmt(momCCW)}</b></td></tr></table></div>
+    <p><span class="eqi">(${fmt(xp)}−${fmt(xr)})×(−R_${nodeOf_(xr)}) + ${fmt(momCCW)} = 0  ⇒  R_${nodeOf_(xr)} = ${fmt(momCCW)} / (${fmt(xp)}−${fmt(xr)}) = ${fmt(Rroller)} kN</span></p>
+    <p><b>الخطوة 2 — ΣFy = 0:</b> <span class="eqi">R_${nodeOf_(xp)} + R_${nodeOf_(xr)} = ΣP = ${fmt(sumP)} kN  ⇒  R_${nodeOf_(xp)} = ${fmt(sumP)} − ${fmt(Rroller)} = ${fmt(Rpin)} kN</span></p>`;
+  if (model.axial.length) { const sumFx = model.axial.reduce((a, x) => a + x.H, 0); h += `<p><b>الخطوة 3 — ΣFx = 0</b> (الركيزة المنزلقة لا تقاوم أفقياً، فتتحمل ${nodeOf_(xp)} المفصلية كامل الأفقي): <span class="eqi">H_${nodeOf_(xp)} = −(${fmt(sumFx)}) = ${fmt(-sumFx)} kN</span></p>`; }
+  return h;
+}
+// اشتقاق N/V/M عند نقطة استعلام بطريقة المقاطع (عام: يعمل بردود أفعال معروفة أياً كانت طريقة إيجادها)
+function beamQueryDerivation(model, reactions, AX, x) {
+  const rows = [], addRow = (label, dV, dM) => rows.push({ label, dV, dM });
+  let V = 0, M = 0;
+  reactions.forEach(q => { if (q.x < x - 1e-9) { V += q.R; M += q.R * (x - q.x); addRow(`رد الفعل عند ${nodeOf_(q.x)} (R=${fmt(q.R)} kN، الذراع=${fmt(x - q.x)} m)`, q.R, q.R * (x - q.x));
+    if (q.M) { M += q.M; addRow(`عزم رد الفعل عند ${nodeOf_(q.x)} (${fmt(q.M)} kN·m، يُضاف مباشرة)`, 0, q.M); } } });
+  model.loads.forEach(l => {
+    if (l.type === 'P' && l.x < x - 1e-9) { V -= l.P; M -= l.P * (x - l.x); addRow(`حمل مركز ${fmt(Math.abs(l.P))} kN عند x=${fmt(l.x)} (الذراع=${fmt(x - l.x)} m)`, -l.P, -l.P * (x - l.x)); }
+    else if (l.type === 'M' && l.x < x - 1e-9) { M += l.M; addRow(`عزم مركز ${fmt(Math.abs(l.M))} kN·m عند x=${fmt(l.x)} (يُضاف مباشرة بعد تجاوزه)`, 0, l.M); }
+    else if (l.type === 'W' && l.a < x - 1e-9) {
+      const bb = Math.min(l.b, x), wAtBB = l.w1 + (l.w2 - l.w1) * (bb - l.a) / (l.b - l.a), Rmag = (l.w1 + wAtBB) / 2 * (bb - l.a);
+      if (Math.abs(Rmag) > 1e-9) { const xbar = l.a + (Math.abs(l.w1 + wAtBB) < 1e-9 ? (bb - l.a) / 2 : (bb - l.a) * (l.w1 + 2 * wAtBB) / (3 * (l.w1 + wAtBB)));
+        V -= Rmag; M -= Rmag * (x - xbar); addRow(`${bb < l.b - 1e-9 ? 'محصلة الجزء المقطوع من حمل موزع' : 'محصلة حمل موزع'} = ${fmt(Rmag)} kN عند x=${fmt(xbar)} (الذراع=${fmt(x - xbar)} m)`, -Rmag, -Rmag * (x - xbar)); }
+    }
+  });
+  const N = AX ? AX.Nat(x) : 0;
+  return { V, M, N, rows };
+}
+// يبني قسمي «حل الطالب»: (1) ملخص المدخلات — يُطبع قبل رسم النموذج، (2) اشتقاق ردود الأفعال — يُطبع بعده
+function buildBeamStudentReport(model, reactions, AX) {
+  const bi = $('studentInputs'), bd = $('studentDerivation'); if (!bi || !bd) return;
+  const terms = beamLoadTerms(model);
+  bi.innerHTML = `<h2 class="sec">حل الطالب — ملخص المدخلات</h2>
+    <div class="grid2">
+      <div class="tbl"><table><tr><th>#</th><th>البحر</th><th>الطول (m)</th></tr>
+      ${state.spans.map((s, j) => `<tr><td>${j + 1}</td><td>${LET(j)} → ${LET(j + 1)}</td><td class="n">${fmt(s.L)}</td></tr>`).join('')}</table></div>
+      <div class="tbl"><table><tr><th>الركيزة</th><th>x (m)</th><th>النوع</th></tr>
+      ${model.supports.map(s => `<tr><td>${nodeOf_(s.x)}</td><td class="n">${fmt(s.x)}</td><td>${SUPN[s.type]}</td></tr>`).join('')}</table></div>
+    </div>
+    ${terms.length ? `<div class="tbl"><table><tr><th>الأحمال المطبَّقة</th></tr>${terms.map(t => `<tr><td>${t.label}</td></tr>`).join('')}</table></div>` : '<p class="small">لا توجد أحمال مطبَّقة.</p>'}`;
+  bd.innerHTML = `<h2 class="sec">اشتقاق ردود الأفعال خطوة بخطوة</h2>${beamReactionDerivation(model)}`;
+}
+
+// ---------- drawing ----------
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) { const v = attrs[k]; if (typeof v === 'string' && v.startsWith('var(')) e.style.setProperty(k, v); else e.setAttribute(k, v); }
+  if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e;
+}
+// توقيع خفيف على كل رسم (نموذج/فريم) — يبقى مع الرسم عند حفظه كصورة أو طباعته
+function svgWatermark(svg, W, H) {
+  el('text', { x: W - 6, y: H - 6, 'text-anchor': 'end', 'font-size': 9, fill: 'var(--muted)', opacity: .55 }, svg, 'أ.م/ طارق خريط — مختبر تحليل الكمرات والفريمات');
+}
+let geo = null, PRINTING = false;
+function frame(svg, H) {
+  const W = PRINTING ? 720 : Math.max(320, svg.parentNode.clientWidth || 800); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H); svg.innerHTML = '';
+  const m = { l: 50, r: 50 }, L = totalL(); const sx = x => m.l + (W - m.l - m.r) * x / L; geo = { W, m, sx, L }; return { W, sx };
+}
+function arrow(svg, x1, y1, x2, y2, c, w = 1.2) {
+  el('line', { x1, y1, x2, y2, stroke: c, 'stroke-width': w }, svg);
+  const a = Math.atan2(y2 - y1, x2 - x1), s = 5 + w;
+  el('path', { d: `M ${x2 - s * Math.cos(a - .45)} ${y2 - s * Math.sin(a - .45)} L ${x2} ${y2} L ${x2 - s * Math.cos(a + .45)} ${y2 - s * Math.sin(a + .45)} Z`, fill: c, stroke: c, 'stroke-width': .8 }, svg);
+}
+function drawModel(svg, reactions) {
+  const H = 300, { W, sx } = frame(svg, H), yB = 175, F = 'var(--force)', B = 'var(--beam)', M = 'var(--muted)';
+  const L = totalL();
+  // distributed loads first
+  let wmax = 1e-9; state.spans.forEach(sp => sp.loads.forEach(l => { if (l.t === 'U' || l.t === 'T') wmax = Math.max(wmax, Math.abs(l.v)); }));
+  const levels = [];
+  state.spans.forEach((sp, j) => sp.loads.forEach((ld, k) => {
+    if (ld.t !== 'U' && ld.t !== 'T') return;
+    const X = x0(j), a = X + Math.min(ld.a, ld.b), b = X + Math.min(Math.max(ld.a, ld.b), sp.L);
+    let lv = 0; while (levels.some(q => q.lv === lv && !(b <= q.a + 1e-6 || a >= q.b - 1e-6))) lv++; levels.push({ a, b, lv });
+    const base = yB - 7 - lv * 46, hh = v => 32 * Math.abs(v) / wmax;
+    const q1 = ld.t === 'U' ? ld.v : ld.peak === 'start' ? ld.v : 0, q2 = ld.t === 'U' ? ld.v : ld.peak === 'start' ? 0 : ld.v;
+    el('polygon', { points: `${sx(a)},${base} ${sx(a)},${base - hh(q1)} ${sx(b)},${base - hh(q2)} ${sx(b)},${base}`, fill: F, 'fill-opacity': .1, stroke: F, 'stroke-width': 1 }, svg);
+    const n = Math.max(2, Math.round((sx(b) - sx(a)) / 26));
+    for (let i = 0; i <= n; i++) { const q = q1 + (q2 - q1) * i / n; if (Math.abs(q) < 1e-9) continue; const Xp = sx(a + (b - a) * i / n); arrow(svg, Xp, base - hh(q), Xp, base, F, .9); }
+    el('text', { x: (sx(a) + sx(b)) / 2, y: base - Math.max(hh(q1), hh(q2)) - 5, 'text-anchor': 'middle', 'font-size': 11.5, fill: F, 'font-weight': 600 }, svg, `${fmt(ld.v, 1)} kN/m`);
+  }));
+  el('rect', { x: sx(0), y: yB - 3, width: sx(L) - sx(0), height: 6, fill: B, rx: 1 }, svg);
+  // point loads + moments (draggable)
+  state.spans.forEach((sp, j) => sp.loads.forEach((ld, k) => {
+    const X = sx(x0(j) + Math.min(Math.max(ld.x ?? 0, 0), sp.L));
+    if (ld.t === 'P' && ld.incl) { const g = el('g', { 'data-drag': `${j},${k}` }, svg);
+      el('rect', { x: X - 30, y: yB - 80, width: 60, height: 78, fill: 'transparent' }, g);
+      const rad = (ld.ang ?? 45) * Math.PI / 180, len = 55, hs = ld.hdir ?? 1, vs = ld.vdir ?? 1;
+      const ex = X - len * Math.cos(rad) * hs, ey = yB - len * Math.sin(rad) * vs;
+      arrow(g, ex, ey, X, yB, F, 2.4); el('circle', { cx: ex, cy: ey, r: 3.2, fill: F }, g);
+      const right = ex > W - 110; el('text', { x: right ? ex - 6 : ex + 6, y: ey - 4, 'text-anchor': right ? 'end' : 'start', 'font-size': 12, fill: F, 'font-weight': 600 }, g, `${fmt(Math.abs(ld.v), 1)} kN∠${fmt(ld.ang, 0)}°`); }
+    else if (ld.t === 'P') { const g = el('g', { 'data-drag': `${j},${k}` }, svg);
+      el('rect', { x: X - 12, y: yB - 80, width: 24, height: 78, fill: 'transparent' }, g);
+      const dn = ld.v >= 0; arrow(g, X, dn ? yB - 70 : yB - 5, X, dn ? yB - 5 : yB - 70, F, 2.4);
+      el('circle', { cx: X, cy: dn ? yB - 70 : yB - 5, r: 4, fill: F }, g);
+      const right = X > W - 110; el('text', { x: right ? X - 6 : X + 6, y: yB - 66, 'text-anchor': right ? 'end' : 'start', 'font-size': 12, fill: F, 'font-weight': 600 }, g, `${fmt(Math.abs(ld.v), 1)} kN`); }
+    if (ld.t === 'M') { const g = el('g', { 'data-drag': `${j},${k}` }, svg), r = 17, cw = ld.v >= 0;
+      el('rect', { x: X - 22, y: yB - 40, width: 44, height: 42, fill: 'transparent' }, g);
+      el('path', { d: `M ${X - r} ${yB} A ${r} ${r} 0 1 1 ${X + r} ${yB}`, fill: 'none', stroke: F, 'stroke-width': 2 }, g);
+      const tx = cw ? X + r : X - r; el('path', { d: `M ${tx - 4.5} ${yB - 8} L ${tx} ${yB} L ${tx + 4.5} ${yB - 8}`, fill: 'none', stroke: F, 'stroke-width': 2 }, g);
+      el('text', { x: X, y: yB - r - 8, 'text-anchor': 'middle', 'font-size': 12, fill: F, 'font-weight': 600 }, g, `${fmt(Math.abs(ld.v), 1)} kN·m ${cw ? '↻' : '↺'}`); }
+  }));
+  // supports (clickable)
+  for (let i = 0; i <= state.spans.length; i++) {
+    const t = nodeType(i), X = sx(x0(i)), g = el('g', { 'data-node': i }, svg);
+    el('rect', { x: X - 18, y: yB - 20, width: 36, height: 52, fill: 'transparent' }, g);
+    if (t === 'fixed') { const dir = i === 0 ? -1 : 1; el('line', { x1: X, y1: yB - 18, x2: X, y2: yB + 18, stroke: B, 'stroke-width': 2.6 }, g);
+      for (let q = -18; q < 18; q += 6) el('line', { x1: X, y1: yB + q + 6, x2: X + dir * 8, y2: yB + q, stroke: B, 'stroke-width': 1 }, g); }
+    else if (t === 'pin' || t === 'roller') {
+      el('polygon', { points: `${X},${yB + 3} ${X - 10},${yB + 19} ${X + 10},${yB + 19}`, fill: 'none', stroke: B, 'stroke-width': 1.7 }, g);
+      if (t === 'roller') { el('circle', { cx: X - 5, cy: yB + 23, r: 3, fill: 'none', stroke: B }, g); el('circle', { cx: X + 5, cy: yB + 23, r: 3, fill: 'none', stroke: B }, g); el('line', { x1: X - 13, y1: yB + 27, x2: X + 13, y2: yB + 27, stroke: B }, g); }
+      else { el('line', { x1: X - 13, y1: yB + 20, x2: X + 13, y2: yB + 20, stroke: B }, g); for (let q = -12; q < 12; q += 5) el('line', { x1: X + q, y1: yB + 25, x2: X + q + 4, y2: yB + 20, stroke: B, 'stroke-width': .8 }, g); }
+    } else el('circle', { cx: X, cy: yB, r: 2.5, fill: M }, g);
+    el('text', { x: X, y: yB - 10, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: 'var(--shear)' }, g, LET(i)).setAttribute('dy', t === 'fixed' ? '-12' : '0');
+  }
+  state.spans.forEach((sp, j) => { if (sp.hinge) el('circle', { cx: sx(x0(j) + sp.hx), cy: yB, r: 5.5, fill: 'var(--panel)', stroke: B, 'stroke-width': 2 }, svg); });
+  // reactions
+  (reactions || []).forEach(q => { const X = sx(q.x), up = q.R >= 0, y1 = yB + 36, y2 = yB + 64;
+    if (Math.abs(q.R) > 1e-6) arrow(svg, X, up ? y2 : y1, X, up ? y1 : y2, F, 2);
+    if (q.H != null && Math.abs(q.H) > 1e-6) { const right = q.H >= 0; arrow(svg, right ? X - 34 : X + 34, yB, right ? X - 4 : X + 4, yB, 'var(--comp)', 2); }
+    let t = `${fmt(Math.abs(q.R), 1)} kN`; if (q.M != null && Math.abs(q.M) > 1e-6) t += ` | ${fmt(Math.abs(q.M), 1)} kN·m ${q.M > 0 ? '↻' : '↺'}`;
+    if (q.H != null && Math.abs(q.H) > 1e-6) t += ` | H=${fmt(Math.abs(q.H), 1)} kN`;
+    const anc = q.x < 1e-6 ? 'start' : q.x > L - 1e-6 ? 'end' : 'middle';
+    el('text', { x: anc === 'start' ? X - 6 : anc === 'end' ? X + 6 : X, y: y2 + 14, 'text-anchor': anc, 'font-size': 11.5, 'font-weight': 600, fill: F }, svg, t); });
+  // dimensions per span
+  const yD = H - 12;
+  el('line', { x1: sx(0), y1: yD, x2: sx(L), y2: yD, stroke: 'var(--line2)' }, svg);
+  for (let i = 0; i <= state.spans.length; i++) el('line', { x1: sx(x0(i)) - 4, y1: yD + 4, x2: sx(x0(i)) + 4, y2: yD - 4, stroke: M, 'stroke-width': 1.2 }, svg);
+  state.spans.forEach((sp, j) => el('text', { x: (sx(x0(j)) + sx(x0(j + 1))) / 2, y: yD - 5, 'text-anchor': 'middle', 'font-size': 11, fill: M }, svg, `${fmt(sp.L, 2)} m`));
+  svgWatermark(svg, W, H);
+}
+function drawDiag(svg, samples, key, color, flip, dec, mode) {
+  const H = 200, { W, sx } = frame(svg, H), top = 34, bot = H - 24, L = totalL();
+  const vals = samples.map(s => s[key]); let mx = Math.max(0, ...vals), mn = Math.min(0, ...vals);
+  if (mx - mn < 1e-9) { mx = 1; mn = -1; }
+  const sy = v => { const t = (v - mn) / (mx - mn); return flip ? top + t * (bot - top) : bot - t * (bot - top); }, y0 = sy(0);
+  for (let i = 0; i <= state.spans.length; i++) el('line', { x1: sx(x0(i)), y1: top - 10, x2: sx(x0(i)), y2: bot + 8, stroke: 'var(--line2)', 'stroke-dasharray': '3 3' }, svg);
+  if (mode !== 'shape') {
+    const byE = {}; samples.forEach(s => (byE[s.e] = byE[s.e] || []).push(s)); let d = '';
+    Object.values(byE).forEach(a => { d += `M ${sx(a[0].x)} ${y0} ` + a.map(s => `L ${sx(s.x).toFixed(2)} ${sy(s[key]).toFixed(2)}`).join(' ') + ` L ${sx(a[a.length - 1].x)} ${y0} Z `; });
+    el('path', { d, fill: color, 'fill-opacity': .2 }, svg);
+  }
+  let ln = ''; samples.forEach((s, i) => ln += (i ? 'L' : 'M') + ` ${sx(s.x).toFixed(2)} ${sy(s[key]).toFixed(2)} `);
+  el('path', { d: ln, fill: 'none', stroke: color, 'stroke-width': 2.1, 'stroke-linejoin': 'round' }, svg);
+  el('line', { x1: sx(0), y1: y0, x2: sx(L), y2: y0, stroke: 'var(--beam)', 'stroke-width': 1.3, 'stroke-dasharray': mode === 'shape' ? '5 4' : 'none' }, svg);
+  if (mode === 'shape') return;
+  const amax = Math.max(Math.abs(mx), Math.abs(mn));
+  const cands = samples.filter(s => s.key && Math.abs(s[key]) > amax * 0.02).sort((a, b) => Math.abs(b[key]) - Math.abs(a[key]));
+  const placed = [];
+  cands.forEach(s => {
+    const v = s[key], X = sx(s.x), Y = sy(v), ty = Y < y0 ? Y - 6 : Y + 15, txt = fmt(v, dec), wpx = txt.length * 6.8;
+    let anchor = 'middle', bx = X - wpx / 2; if (s.end === 'j' && X < W - 60) { anchor = 'end'; bx = X - wpx - 3; } if (s.end === 'i') { anchor = 'start'; bx = X + 3; }
+    const box = { x1: bx - 3, x2: bx + wpx + 3, y1: ty - 12, y2: ty + 3 };
+    if (placed.length > 20 || placed.some(p => !(box.x2 < p.x1 || box.x1 > p.x2 || box.y2 < p.y1 || box.y1 > p.y2))) return; placed.push(box);
+    el('circle', { cx: X, cy: Y, r: 2.6, fill: color }, svg);
+    el('text', { x: anchor === 'middle' ? X : anchor === 'end' ? X - 3 : X + 3, y: ty, 'text-anchor': anchor, 'font-size': 11.5, 'font-weight': 600, fill: color }, svg, txt);
+  });
+  return { sy };
+}
+// tension-zone strip
+function drawZones(svg, samples, mat, iP) {
+  const H = 170, { W, sx } = frame(svg, H), L = totalL(), yT = 58, yBt = 112, h = yBt - yT, t = 13;
+  const T = 'var(--tens)', C = 'var(--comp)';
+  el('rect', { x: sx(0), y: yT, width: sx(L) - sx(0), height: h, fill: 'var(--panel2)', stroke: 'var(--beam)', 'stroke-width': 1.2 }, svg);
+  const amax = Math.max(1e-9, ...samples.map(s => Math.abs(s.M)));
+  for (let i = 1; i < samples.length; i++) {
+    const a = samples[i - 1], b = samples[i]; if (b.x - a.x < 1e-9) continue;
+    const m = (a.M + b.M) / 2; if (Math.abs(m) < amax * 1e-3) continue;
+    const k = Math.min(1, Math.abs(m) / amax), x = sx(a.x), w = sx(b.x) - sx(a.x) + .6;
+    const top = m < 0 ? T : C, bottom = m > 0 ? T : C;
+    el('rect', { x, y: yT + 1, width: w + .5, height: t, fill: top, 'fill-opacity': .15 + .75 * k, 'shape-rendering': 'crispEdges' }, svg);
+    el('rect', { x, y: yBt - 1 - t, width: w + .5, height: t, fill: bottom, 'fill-opacity': .15 + .75 * k, 'shape-rendering': 'crispEdges' }, svg);
+  }
+  // material overlays
+  const segs = zoneRuns(samples);
+  if (mat === 'conc') segs.forEach(z => { const y = z.s > 0 ? yBt - 7 : yT + 7; el('line', { x1: sx(z.a), y1: y, x2: sx(z.b), y2: y, stroke: 'var(--beam)', 'stroke-width': 3 }, svg);
+    el('text', { x: (sx(z.a) + sx(z.b)) / 2, y: z.s > 0 ? yBt + 16 : yT - 7, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--text)' }, svg, z.s > 0 ? 'حديد سفلي' : 'حديد علوي'); });
+  if (mat === 'steel') segs.forEach(z => { const y = z.s > 0 ? yT - 7 : yBt + 16;
+    el('text', { x: (sx(z.a) + sx(z.b)) / 2, y, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--comp)' }, svg, z.s > 0 ? 'شفة علوية مضغوطة' : 'شفة سفلية مضغوطة ⚠'); });
+  if (mat === 'wood') { const s = samples.reduce((p, q) => Math.abs(q.V) > Math.abs(p.V) ? q : p); const m = samples.reduce((p, q) => Math.abs(q.M) > Math.abs(p.M) ? q : p);
+    el('line', { x1: sx(s.x) - 18, y1: (yT + yBt) / 2, x2: sx(s.x) + 18, y2: (yT + yBt) / 2, stroke: 'var(--bad)', 'stroke-width': 2.5, 'stroke-dasharray': '4 3' }, svg);
+    el('text', { x: sx(s.x), y: yBt + 16, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--bad)' }, svg, 'قص أفقي أقصى');
+    el('text', { x: sx(m.x), y: yT - 7, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--text)' }, svg, 'أقصى إجهاد انحناء'); }
+  iP.forEach(x => { el('line', { x1: sx(x), y1: yT - 3, x2: sx(x), y2: yBt + 3, stroke: 'var(--moment)', 'stroke-width': 1.5, 'stroke-dasharray': '3 2' }, svg);
+    el('text', { x: sx(x), y: H - 6, 'text-anchor': 'middle', 'font-size': 10.5, fill: 'var(--moment)' }, svg, `M=0 @ ${fmt(x)}`); });
+  for (let i = 0; i <= state.spans.length; i++) if (nodeType(i) !== 'free') el('polygon', { points: `${sx(x0(i))},${yBt + 1} ${sx(x0(i)) - 7},${yBt + 12} ${sx(x0(i)) + 7},${yBt + 12}`, fill: 'var(--beam)' }, svg);
+}
+
+// ---------- analysis helpers ----------
+function zoneRuns(S) {
+  const amax = Math.max(1e-9, ...S.map(s => Math.abs(s.M))), eps = amax * 1e-3, L = totalL();
+  const bp = [0, ...crossings(S, 'M').map(c => c.x), L].sort((a, b) => a - b), runs = [];
+  for (let i = 1; i < bp.length; i++) {
+    const a = bp[i - 1], b = bp[i]; if (b - a < 1e-3) continue;
+    const inside = S.filter(s => s.x > a + 1e-6 && s.x < b - 1e-6); if (!inside.length) continue;
+    const pk0 = inside.reduce((p, q) => Math.abs(q.M) > Math.abs(p.M) ? q : p);
+    if (Math.abs(pk0.M) < eps) continue;
+    const sg = Math.sign(pk0.M), lastR = runs[runs.length - 1];
+    const pk = S.filter(s => s.x >= a - 1e-9 && s.x <= b + 1e-9 && Math.sign(s.M) === sg).reduce((p, q) => Math.abs(q.M) > Math.abs(p.M) ? q : p, pk0);
+    if (lastR && lastR.s === sg && Math.abs(lastR.b - a) < 1e-6) { lastR.b = b; if (Math.abs(pk.M) > Math.abs(lastR.m)) { lastR.m = pk.M; lastR.xm = pk.x; } }
+    else runs.push({ s: sg, a, b, m: pk.M, xm: pk.x });
+  }
+  return runs;
+}
+function crossings(S, key) {
+  const amax = Math.max(1e-9, ...S.map(s => Math.abs(s[key]))), eps = amax * 1e-4, out = [];
+  let prev = null, zeroX = null;
+  for (const s of S) {
+    const v = s[key];
+    if (Math.abs(v) <= eps) { if (prev && zeroX === null) zeroX = s.x; continue; }
+    if (prev && Math.sign(v) !== Math.sign(prev[key])) {
+      const jump = zeroX === null && s.x - prev.x < 1e-9;
+      const x = zeroX !== null ? zeroX : (jump ? s.x : prev.x + (s.x - prev.x) * prev[key] / (prev[key] - v));
+      if (!out.some(q => Math.abs(q.x - x) < 1e-3)) out.push({ x, jump });
+    }
+    prev = s; zeroX = null;
+  }
+  return out.sort((a, b) => a.x - b.x);
+}
+// ---------- material comparison (indicative) ----------
+const IPE = [[100, 34.2, 8.1], [120, 53.0, 10.4], [140, 77.3, 12.9], [160, 109, 15.8], [180, 146, 18.8], [200, 194, 22.4], [220, 252, 26.2], [240, 324, 30.7], [270, 429, 36.1], [300, 557, 42.2], [330, 713, 49.1], [360, 904, 57.1], [400, 1160, 66.3], [450, 1500, 77.6], [500, 1930, 90.7], [550, 2440, 106], [600, 3070, 122]];
+function compare(Mmax, Vmax) {
+  const M = Mmax * 1e6, V = Vmax * 1e3, up = v => Math.ceil(v / 25) * 25, rect = (h, rho) => h / 2 * h * 1e-6 * rho;
+  const out = [];
+  // timber C24: σ_all = 10 MPa, τ_all = 1.0 MPa, b = h/2
+  const hb = Math.cbrt(12 * M / 10), hs = Math.sqrt(3 * V / 1.0), hw = up(Math.max(hb, hs, 100));
+  out.push({ k: 'wood', name: 'خشب C24', h: hw, w: rect(hw, 420), gov: hs > hb ? 'القص' : 'الانحناء', sec: `${hw / 2} × ${hw} mm` });
+  // plain concrete: Sm ≥ 1.5M/(0.6·0.42√f′c), f′c = 25  (ACI 318-19 §14.5.2.1)
+  const Sp = 1.5 * M / (0.6 * 0.42 * 5), hp = up(Math.max(Math.cbrt(12 * Sp), 150));
+  out.push({ k: 'plain', name: 'خرسانة عادية', h: hp, w: rect(hp, 2400), gov: 'الشد', sec: `${hp / 2} × ${hp} mm` });
+  // RC: ρ = 1%, f′c = 25, fy = 420, Mu = 1.5M, d = 0.9h, b = h/2
+  const Rn = 0.01 * 420 * (1 - 0.59 * 0.01 * 420 / 25), hr = up(Math.max(Math.cbrt(1.5 * M / (0.9 * Rn * 0.5 * 0.81)), 200));
+  out.push({ k: 'rc', name: 'خرسانة مسلحة', h: hr, w: rect(hr, 2500), gov: 'الانحناء', sec: `${hr / 2} × ${hr} mm، ρ≈1%` });
+  // steel S275: σ_all = 0.6fy = 165 MPa, IPE
+  const Wr = M / 165 / 1e3, ipe = IPE.find(p => p[1] >= Wr);
+  out.push({ k: 'steel', name: 'حديد S275', h: ipe ? ipe[0] : NaN, w: ipe ? ipe[2] : NaN, gov: 'الانحناء', sec: ipe ? `IPE ${ipe[0]}` : '> IPE 600' });
+  return out;
+}
+function drawCompare(svg, rows, key, unit, sel) {
+  const W = PRINTING ? 340 : Math.max(280, svg.parentNode.clientWidth || 400), H = 40 + rows.length * 38; svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H); svg.innerHTML = '';
+  const mx = Math.max(1e-9, ...rows.map(r => isFinite(r[key]) ? r[key] : 0)), x0 = 110, x1 = W - 70;
+  const col = { wood: 'var(--wood)', plain: 'var(--conc)', rc: 'var(--rc)', steel: 'var(--steel)' };
+  rows.forEach((r, i) => { const y = 30 + i * 38, hot = r.k === sel || (sel === 'conc' && (r.k === 'plain' || r.k === 'rc'));
+    el('text', { x: x0 - 8, y: y + 15, 'text-anchor': 'end', 'font-size': 12, fill: hot ? 'var(--text)' : 'var(--muted)', 'font-weight': hot ? 700 : 400 }, svg, r.name);
+    const w = isFinite(r[key]) ? (x1 - x0) * r[key] / mx : 0;
+    el('rect', { x: x0, y, width: Math.max(2, w), height: 22, rx: 3, fill: col[r.k], 'fill-opacity': hot ? 1 : .45, stroke: hot ? 'var(--force)' : 'none', 'stroke-width': 2 }, svg);
+    el('text', { x: x0 + w + 6, y: y + 15, 'font-size': 12, 'font-weight': 600, fill: 'var(--text)' }, svg, isFinite(r[key]) ? `${fmt(r[key], key === 'w' ? 1 : 0)} ${unit}` : '—'); });
+}
+
+// ---------- run ----------
+let last = null;
+function run() {
+  save();
+  const E = $('err'), model = toModel(), errs = [];
+  if (!model.supports.length) errs.push('لا توجد أي ركيزة: اختر نوع ركيزة لنقطة واحدة على الأقل.');
+  state.spans.forEach((sp, j) => { if (!(sp.L > 0)) errs.push(`طول البحر ${j + 1} يجب أن يكون موجباً.`); });
+  state.spans.forEach((sp, j) => { if (sp.hinge && ((j === 0 && false))) {} });
+  if (errs.length) { E.innerHTML = errs.join('<br>'); E.classList.add('on'); drawModel($('gModel'), []); return; }
+  const r = solveBeam(model, 1, 1);
+  if (r.error) { E.innerHTML = '<b>المنشأ غير مستقر (ميكانيزم).</b> الركائز الحالية لا تكفي لحفظ الاتزان، أو يوجد مفصل يجعل جزءاً من الكمرة حراً في الحركة. هذا سؤال مفيد للطالب: أين تضيف ركيزة، أو أي ركيزة تحولها إلى وثاقة، لتصبح الكمرة مستقرة؟'; E.classList.add('on'); drawModel($('gModel'), []); ['gV', 'gM', 'gY'].forEach(id => $(id).innerHTML = ''); return; }
+  E.classList.remove('on'); last = r;
+  const S = r.samples, ymax = Math.max(1e-12, ...S.map(s => Math.abs(s.y)));
+  S.forEach(s => s.yn = s.y / ymax);
+  const AX = computeAxial(model);
+  r.elems.forEach((el, ei) => { const Nv = AX.Nat((el.xi + el.xj) / 2); S.forEach(s => { if (s.e === ei) s.N = Nv; }); });
+  const hasAxial = model.axial.length > 0;
+  r.reactions.forEach(q => { q.H = (AX.anchor != null && Math.abs(q.x - AX.anchor) < 1e-6) ? -AX.sumFx : 0; });
+  if (AX.warn) { E.innerHTML += (E.innerHTML ? '<br>' : '') + AX.warn; E.classList.add('on'); }
+  drawModel($('gModel'), r.reactions);
+  drawDiag($('gV'), S, 'V', 'var(--shear)', false, 2);
+  drawDiag($('gM'), S, 'M', 'var(--moment)', state.tension, 2);
+  $('rowN').style.display = hasAxial ? '' : 'none';
+  if (hasAxial) drawDiag($('gN'), S, 'N', 'var(--comp)', false, 2);
+  drawDiag($('gY'), S, 'yn', 'var(--defl)', false, 2, 'shape');
+  last.hasAxial = hasAxial; last.model = model; last.AX = AX;
+  bBuildQPick(); bRunQ();
+  buildBeamStudentReport(model, r.reactions, AX);
+  // tables
+  const nodeOf = x => { for (let i = 0; i <= state.spans.length; i++) if (Math.abs(x0(i) - x) < 1e-6) return LET(i); return '?'; };
+  $('tR').innerHTML = `<tr><th>الركيزة</th><th>النوع</th><th>R (kN) ↑</th>${hasAxial ? '<th>H (kN) →</th>' : ''}<th>M (kN·m)</th></tr>` + r.reactions.map(q => `<tr><td><b>${nodeOf(q.x)}</b> <span class="small">x=${fmt(q.x)}</span></td><td>${SUPN[q.type]}</td><td class="n f">${fmt(q.R)}</td>${hasAxial ? `<td class="n f">${Math.abs(q.H) > 1e-9 ? fmt(q.H) : '—'}</td>` : ''}<td class="n f">${q.M == null ? '—' : fmt(Math.abs(q.M)) + (Math.abs(q.M) > 1e-9 ? (q.M > 0 ? ' ↻' : ' ↺') : '')}</td></tr>`).join('') +
+    `<tr><td colspan="2"><b>ΣR</b> <span class="small">= مجموع الأحمال</span></td><td class="n f"><b>${fmt(r.reactions.reduce((a, q) => a + q.R, 0))}</b></td>${hasAxial ? '<td></td>' : ''}<td></td></tr>`;
+  const pick = (k, f) => S.reduce((a, b) => f(b[k], a[k]) ? b : a);
+  const vx = pick('V', (a, b) => Math.abs(a) > Math.abs(b)), mp = pick('M', (a, b) => a > b), mn = pick('M', (a, b) => a < b);
+  const cV = crossings(S, 'V'), cM = crossings(S, 'M'), zV = cV.map(c => c.x), zM = cM.filter(c => !c.jump).map(c => c.x), jM = cM.filter(c => c.jump).map(c => c.x);
+  const Rc = model.supports.reduce((a, s) => a + (s.type === 'fixed' ? 2 : 1), 0), deg = Rc - 2 - model.hinges.length;
+  $('tK').innerHTML = `<tr><th>الكمية</th><th>القيمة</th></tr>
+    ${hasAxial ? (() => { const nx = pick('N', (a, b) => Math.abs(a) > Math.abs(b)); return `<tr><td>أقصى قوة محورية |N|</td><td class="n">${fmt(Math.abs(nx.N))} kN @ x=${fmt(nx.x)} (${nx.N < 0 ? 'ضغط' : 'شد'})</td></tr>`; })() : ''}
+    <tr><td>أقصى قص |V|</td><td class="n">${fmt(Math.abs(vx.V))} kN @ x=${fmt(vx.x)}</td></tr>
+    <tr><td>أقصى عزم موجب M⁺</td><td class="n">${mp.M > 1e-9 ? `${fmt(mp.M)} kN·m @ x=${fmt(mp.x)}` : '—'}</td></tr>
+    <tr><td>أقصى عزم سالب M⁻</td><td class="n">${mn.M < -1e-9 ? `${fmt(mn.M)} kN·m @ x=${fmt(mn.x)}` : '—'}</td></tr>
+    <tr><td>مواضع انعدام القص أو تغيّر إشارته</td><td class="n">${zV.length ? zV.map(x => fmt(x)).join(' , ') + ' m' : '—'}</td></tr>
+    <tr><td>نقاط انقلاب العزم (M=0)</td><td class="n">${zM.length ? zM.map(x => fmt(x)).join(' , ') + ' m' : '—'}</td></tr>
+    ${jM.length ? `<tr><td>قفزة في العزم (عزم مركز)</td><td class="n">${jM.map(x => fmt(x)).join(' , ')} m</td></tr>` : ''}
+    <tr><td>درجة عدم التحديد</td><td>${deg === 0 ? 'محددة استاتيكياً' : deg > 0 ? `غير محددة بدرجة ${deg}` : '—'}</td></tr>`;
+  last.ctx = { S, vx, mp, mn, zV, zM, jM, deg, Rc, model };
+  report(); note();
+}
+
+// ---------- material report ----------
+const RNG = z => `<span class="num">${fmt(z.a)} → ${fmt(z.b)} m</span>`;
+const N = (v, d = 2) => `<span class="num">${fmt(v, d)}</span>`;
+function report() {
+  const R = $('report'); if (!last || !last.ctx) return;
+  if (!state.mat) { R.innerHTML = '<p class="small">اختر إحدى المواد الثلاث أعلاه؛ سيظهر هنا تقرير يربط المخططات بسلوك المادة، مع مقارنة بالمادتين الأخريين.</p>'; return; }
+  const { S, vx, mp, mn, zM, jM } = last.ctx, runs = zoneRuns(S), bot = runs.filter(z => z.s > 0), topz = runs.filter(z => z.s < 0);
+  const Mmax = Math.max(Math.abs(mp.M), Math.abs(mn.M)), Vmax = Math.abs(vx.V), cmp = compare(Mmax, Vmax);
+  const freeEnd = nodeType(0) === 'free' || nodeType(state.spans.length) === 'free';
+  const reac = last.reactions;
+  let h = '', title = { wood: 'الخشب', conc: 'الخرسانة', steel: 'الحديد (الصلب)' }[state.mat];
+  const lead = {
+    wood: 'الخشب مادة طبيعية ليفية غير متجانسة الاتجاه (anisotropic): مقاومته موازياً للألياف أعلى بكثير من مقاومته عمودياً عليها، ومقاومته للقص الموازي للألياف ضعيفة نسبياً، وهو خفيف جداً قياساً بمقاومته.',
+    conc: 'الخرسانة قوية في الضغط وضعيفة في الشد، إذ لا تتجاوز مقاومة الشد نحو 10% من مقاومة الضغط. لذلك تتشقق في الجهة المشدودة، ودور مخطط العزم هنا هو أن يخبرنا أين نضع حديد التسليح بالضبط.',
+    steel: 'الحديد مادة متجانسة تقاوم الشد والضغط بنفس إجهاد الخضوع تقريباً، لذا تكون قطاعاته نحيفة وعالية الكفاءة (I). لكن النحافة تجعل الأجزاء المضغوطة معرضة للانبعاج، فالمخطط يخبرنا أين تكون الشفة مضغوطة.'
+  }[state.mat];
+  h += `<p class="lead"><b>${title}:</b> ${lead}</p>`;
+  h += `<div class="card"><div class="plot"><h3>مناطق الشد والضغط على ارتفاع المقطع (تتدرج الشدة بقيمة العزم)</h3><svg id="gZ"></svg></div>
+    <div class="legend"><span><i style="background:var(--tens)"></i>شد</span><span><i style="background:var(--comp)"></i>ضغط</span><span><i style="background:var(--moment)"></i>نقطة انقلاب M = 0</span></div></div>`;
+  const items = [];
+  if (state.mat === 'conc') {
+    bot.forEach(z => items.push(`عزم موجب في المدى ${RNG(z)} (أقصاه ${N(z.m)} kN·m عند x = ${N(z.xm)}): الشد في <b>الأسفل</b>، والشقوق الرأسية تبدأ من الوجه السفلي، فيوضع <b>الحديد الرئيسي سفلياً</b>.`));
+    topz.forEach(z => items.push(`عزم سالب في المدى ${RNG(z)} (أقصاه ${N(z.m)} kN·m عند x = ${N(z.xm)}): الشد في <b>الأعلى</b>، فيلزم <b>حديد علوي</b> فوق هذه المنطقة. إهماله خطأ تنفيذي شائع يسبب تشققاً علوياً فوق الركائز.`));
+    if (zM.length) items.push(`نقاط الانقلاب عند x = ${zM.map(x => N(x)).join('، ')} m ينعدم فيها العزم؛ هي المواقع المنطقية لقطع الحديد أو تراكبه، مع إضافة طول التماسك المطلوب.`);
+    if (jM.length) items.push(`عند x = ${jM.map(x => N(x)).join('، ')} m يقفز العزم فجأة بسبب العزم المركز، فيتبدل وجه الشد بين الأعلى والأسفل مباشرة؛ يلزم حديد علوي وسفلي مستمر عبر هذه النقطة مع تماسك كافٍ.`);
+    items.push(`أقصى قص ${N(Vmax)} kN عند x = ${N(vx.x)} m قرب الركيزة: هنا تظهر الشقوق القطرية المائلة بنحو 45°، وتقاومها الكانات، فتُكثّف في مناطق القص العالي وتتباعد في الوسط.`);
+    if (freeEnd) items.push('في البروز (الظفر) يكون الشد في الأعلى على طوله كله؛ وضع الحديد الرئيسي في الأسفل هنا يؤدي إلى انهيار البروز.');
+    items.push(`مقارنة لافتة: الخرسانة العادية تحتاج ارتفاعاً ${N(cmp[1].h, 0)} mm مقابل ${N(cmp[2].h, 0)} mm للمسلحة؛ الفرق كله سببه ضعف الشد، وهذا هو مبرر وجود الحديد.`);
+  }
+  if (state.mat === 'steel') {
+    bot.forEach(z => items.push(`المدى ${RNG(z)} عزمه موجب: الشفة <b>العلوية مضغوطة</b>. إن كانت مقيدة جانبياً بالبلاطة فالخطر محدود، وإلا فهي معرضة للانبعاج الجانبي الالتوائي (LTB).`));
+    topz.forEach(z => items.push(`المدى ${RNG(z)} عزمه سالب (أقصاه ${N(z.m)} kN·m): الشفة <b>السفلية مضغوطة</b> وغالباً غير مقيدة جانبياً، فتلزم دعامات جانبية أو ركائز التوائية (fly braces) قرب الركائز الداخلية وفي البروز.`));
+    items.push(`أقصى إجهاد انحناء σ = M/S يقع عند x = ${N(Math.abs(mp.M) >= Math.abs(mn.M) ? mp.x : mn.x)} m حيث |M| = ${N(Mmax)} kN·m؛ القطاع الإرشادي المقابل ${cmp[3].sec}.`);
+    items.push(`عند الركائز تتركز ردود أفعال (أكبرها ${N(Math.max(...reac.map(q => Math.abs(q.R))))} kN)، ويُفحص عندها خضوع الجذع وتجعده (web yielding / crippling)، وقد تلزم مقويات حاملة (bearing stiffeners). وكذلك تحت الأحمال المركزة.`);
+    items.push(`القص الأقصى ${N(Vmax)} kN يحمله الجذع تقريباً وحده: τ ≈ V / (h·t<sub>w</sub>).`);
+    if (zM.length) items.push(`نقاط الانقلاب x = ${zM.map(x => N(x)).join('، ')} m أفضل أماكن لوصلات التجميع (splices)، لأن العزم فيها صغير.`);
+  }
+  if (state.mat === 'wood') {
+    const hot = Math.abs(mp.M) >= Math.abs(mn.M) ? mp : mn;
+    items.push(`أقصى إجهاد انحناء عند x = ${N(hot.x)} m (|M| = ${N(Mmax)} kN·m) في الوجه ${hot.M > 0 ? 'السفلي' : 'العلوي'} المشدود. العُقد والشقوق في منطقة الشد أخطر بكثير منها في منطقة الضغط؛ لذلك يوضع الوجه الأجود للخشبة في جهة الشد.`);
+    items.push(`أقصى قص ${N(Vmax)} kN عند x = ${N(vx.x)} m. في المقطع المستطيل يبلغ إجهاد القص أقصاه على المحور المحايد τ<sub>max</sub> = 1.5V/A، ويعمل موازياً للألياف، فيسبب انفصالاً أفقياً (horizontal shear). في الخشب قد يحكم القص التصميم في البحور القصيرة ذات الأحمال الكبيرة.`);
+    items.push(`ردود الأفعال (أكبرها ${N(Math.max(...reac.map(q => Math.abs(q.R))))} kN) تضغط عمودياً على الألياف، وهي أضعف اتجاه للخشب؛ فيُتحقق من طول الارتكاز لتجنب الهرس.`);
+    items.push('لا تُعمل حزّات (notches) في الوجه المشدود قرب الركائز؛ فهي تركز الإجهاد وتبدأ منها شقوق القص.');
+    items.push('الخشب يزحف (creep) تحت الأحمال الدائمة، فيتضاعف ترخيمه على المدى الطويل تقريباً؛ لذلك يحكم الترخيم كثيراً من تصاميم الخشب.');
+    if (topz.length) items.push(`يوجد عزم سالب في المدى ${topz.map(RNG).join('، ')}، فالوجه العلوي مشدود هناك؛ فكّر في ذلك عند فحص العيوب ووصل الأجزاء.`);
+  }
+  h += `<h3 style="font-size:.98rem;margin:1rem 0 .3rem">ماذا تعني المخططات لـ${title}؟</h3><ol>${items.map(i => `<li>${i}</li>`).join('')}</ol>`;
+  // comparison
+  h += `<h3 style="font-size:.98rem;margin:1.2rem 0 .3rem">مقارنة ${title} بالمواد الأخرى لنفس القوى الداخلية <span class="small">(|M|max = ${fmt(Mmax)} kN·m، |V|max = ${fmt(Vmax)} kN)</span></h3>
+    <div class="grid2"><div class="card"><div class="plot" style="padding-top:1.6rem"><h3>الارتفاع اللازم للمقطع h (mm)</h3><svg id="gC1"></svg></div></div>
+    <div class="card"><div class="plot" style="padding-top:1.6rem"><h3>الوزن الذاتي (kg/m)</h3><svg id="gC2"></svg></div></div></div>
+    <div class="tbl" style="margin-top:.8rem"><table><tr><th>المادة</th><th>القطاع الإرشادي</th><th>h (mm)</th><th>الوزن (kg/m)</th><th>ما يحكم</th><th>الفرض</th></tr>
+    ${cmp.map(r => `<tr><td><b>${r.name}</b></td><td class="n">${r.sec}</td><td class="n">${fmt(r.h, 0)}</td><td class="n">${fmt(r.w, 1)}</td><td>${r.gov}</td><td class="small">${{ wood: 'σ = 10، τ = 1.0 MPa، b = h/2', plain: 'Mn = 0.42√f′c·S، φ = 0.6، f′c = 25', rc: 'ρ = 1%، f′c = 25، fy = 420، معامل 1.5', steel: 'σ = 0.6fy = 165 MPa، مقطع IPE' }[r.k]}</td></tr>`).join('')}</table></div>
+    <p class="small">مقارنة إرشادية تعليمية بقيم نمطية وقطاع مستطيل b = h/2 (عدا الحديد)، غرضها إظهار الفرق في السلوك وليست تصميماً.</p>`;
+  // questions
+  const qs = [];
+  if (last.ctx.zV.length && mp.M > 1e-9) qs.push(`لاحظ أن القص ينعدم عند x = ${fmt(last.ctx.zV[0])} m. ما علاقة هذا الموضع بموضع أكبر عزم؟ ولماذا؟`);
+  if (state.spans.some(s => s.hinge)) qs.push('لماذا ينعدم العزم تماماً عند المفصل الداخلي، مع أن القص عنده لا ينعدم؟');
+  if (freeEnd) qs.push('ما قيمة القص والعزم عند الطرف الحر؟ وكيف يفسر ذلك شكل المخططين في البروز؟');
+  qs.push(state.mat === 'conc' ? 'لو عُكس اتجاه الحمل (ضغط رياح لأعلى مثلاً)، أين سينتقل الحديد الرئيسي؟' : state.mat === 'steel' ? 'لماذا يُفضَّل المقطع I على المقطع المستطيل المصمت من نفس الوزن؟' : 'لماذا يُحتمل أن يحكم القص في الخشب ولا يحكم غالباً في الحديد؟');
+  qs.push('اسحب الحمل المركز على طول البحر: متى يبلغ العزم الأقصى أكبر قيمة له؟');
+  h += `<div class="qs"><h4>أسئلة للتفكير</h4><ol>${qs.slice(0, 4).map(q => `<li>${q}</li>`).join('')}</ol></div>`;
+  R.innerHTML = h;
+  drawZones($('gZ'), S, state.mat, zM);
+  drawCompare($('gC1'), cmp, 'h', 'mm', state.mat);
+  drawCompare($('gC2'), cmp, 'w', 'kg/m', state.mat);
+}
+document.querySelectorAll('#mats button').forEach(b => b.onclick = () => { state.mat = b.dataset.m; build(); run(); });
+
+// ---------- scientific note ----------
+function note() {
+  const c = last.ctx, sumP = c.model.loads.reduce((a, l) => a + (l.type === 'P' ? l.P : l.type === 'W' ? (l.w1 + l.w2) / 2 * (l.b - l.a) : 0), 0);
+  $('note').innerHTML = `<h3>توضيح علمي</h3>
+  <p><b>تصنيف الكمرة:</b> عدد مركبات ردود الأفعال = ${c.Rc}، ومعادلات الاتزان المستوية للكمرة = 2${c.model.hinges.length ? ` + ${c.model.hinges.length} معادلة شرطية للمفاصل` : ''}، إذن <span class="eqi">n = ${c.Rc} − ${2 + c.model.hinges.length} = ${c.deg}</span>. ${c.deg === 0 ? 'الكمرة محددة استاتيكياً: ردود أفعالها لا تتأثر بجساءة المقطع.' : `الكمرة غير محددة بدرجة ${c.deg}: تُحل بإضافة شروط توافق التشوهات (طرق القوى، الإزاحات، توزيع العزوم)، ولأن الجساءة EI ثابتة هنا فهي لا تغير القوى الداخلية.`}</p>
+  <p><b>التحقق من الاتزان:</b> <span class="eqi">ΣR = ${fmt(last.reactions.reduce((a, q) => a + q.R, 0))} kN</span> و <span class="eqi">ΣP = ${fmt(sumP)} kN</span>، فالاتزان الرأسي محقق.</p>
+  <h3>العلاقات التي تربط الحمل بالقص والعزم</h3>
+  <ul>
+    <li><span class="eqi">dV/dx = −w(x)</span>: ميل مخطط القص يساوي شدة الحمل الموزع؛ فالحمل المنتظم يعطي قصاً خطياً، والحمل المثلثي يعطي قصاً على شكل قطع مكافئ.</li>
+    <li><span class="eqi">dM/dx = V(x)</span>: ميل مخطط العزم يساوي القص؛ لذلك تكون قيمة العزم القصوى حيث <span class="eqi">V = 0</span>، ودرجة منحنى العزم أعلى بدرجة من القص.</li>
+    <li>الحمل المركز يُحدث <b>قفزة</b> في مخطط القص بمقداره، وانكساراً في مخطط العزم. العزم المركز يُحدث <b>قفزة</b> في مخطط العزم بمقداره، ولا يؤثر على شكل القص.</li>
+    <li>العزم ينعدم عند الطرف الحر وعند الركيزة المفصلية أو المنزلقة الطرفية وعند المفصل الداخلي، ولا ينعدم عند الوثاقة.</li>
+    <li>تغير العزم بين نقطتين يساوي المساحة تحت مخطط القص بينهما: <span class="eqi">M₂ − M₁ = ∫ V dx</span>.</li>
+  </ul>
+  <h3>الإشارات المعتمدة</h3>
+  <p>القص موجب عندما تكون محصلة القوى يسار المقطع لأعلى، والعزم موجب عندما يسبب شداً في الألياف السفلية (تقعر لأعلى). العزم يُرسم في الجهة الموجبة ما لم يُختر «رسم العزم على جهة الشد». الأحمال هنا قيم تشغيلية بدون معاملات تصعيد، لأن الهدف فهم التحليل لا التصميم.</p>
+  <p class="small">طريقة الحل: الجساءة المباشرة لعناصر أويلر–برنولي بقوى نهايات مثبتة مضبوطة، فالنتائج دقيقة وليست تقريبية.</p>`;
+}
+
+// ---------- interactions ----------
+const gm = $('gModel'); let drag = null;
+gm.addEventListener('pointerdown', e => {
+  const n = e.target.closest('[data-node]'); if (n) { const i = +n.dataset.node, order = ['pin', 'roller', 'fixed', 'free']; setNode(i, order[(order.indexOf(nodeType(i)) + 1) % 4]); build(); run(); return; }
+  const g = e.target.closest('[data-drag]'); if (!g) return;
+  const [j, k] = g.dataset.drag.split(',').map(Number); drag = { j, k }; gm.setPointerCapture(e.pointerId); e.preventDefault();
+});
+gm.addEventListener('pointermove', e => {
+  if (!drag || !geo) return; const r = gm.getBoundingClientRect(), px = (e.clientX - r.left) * geo.W / r.width;
+  const xg = (px - geo.m.l) / (geo.W - geo.m.l - geo.m.r) * geo.L, sp = state.spans[drag.j], ld = sp.loads[drag.k];
+  ld.x = Math.round(Math.min(Math.max(xg - x0(drag.j), 0), sp.L) * 20) / 20;
+  const s = $(`sl-${drag.j}-${drag.k}`); if (s) { s.value = ld.x; s.nextSibling.textContent = fmt(ld.x) + ' m'; }
+  run();
+});
+const endDrag = () => { drag = null; };
+gm.addEventListener('pointerup', endDrag); gm.addEventListener('pointercancel', endDrag);
+const plots = $('plots');
+plots.addEventListener('pointermove', ev => {
+  if (!last || !geo) return; const rc = plots.getBoundingClientRect(), px = ev.clientX - rc.left, W = rc.width;
+  const x = (px * geo.W / W - geo.m.l) / (geo.W - geo.m.l - geo.m.r) * geo.L; if (x < 0 || x > geo.L) { hide(); return; }
+  let best = last.samples[0]; last.samples.forEach(s => { if (Math.abs(s.x - x) < Math.abs(best.x - x)) best = s; });
+  $('cursor').style.display = 'block'; $('cursor').style.left = px + 'px';
+  const ro = $('readout'); ro.style.display = 'block'; ro.textContent = `x = ${fmt(best.x)} m` + (best.N != null && Math.abs(best.N) > 1e-9 ? `   N = ${fmt(best.N)} kN` : '') + `   V = ${fmt(best.V)} kN   M = ${fmt(best.M)} kN·m`;
+});
+const hide = () => { $('cursor').style.display = 'none'; $('readout').style.display = 'none'; };
+plots.addEventListener('pointerleave', hide);
+$('tension').onchange = () => { state.tension = $('tension').checked; run(); };
+$('print').onclick = () => { document.body.classList.remove('printing-student'); view('out'); PRINTING = true; run(); setTimeout(() => window.print(), 150); };
+$('printStudent').onclick = () => { document.body.classList.add('printing-student'); view('out'); PRINTING = true; run(); setTimeout(() => window.print(), 150); };
+window.addEventListener('beforeprint', () => { PRINTING = true; run(); });
+window.addEventListener('afterprint', () => { PRINTING = false; document.body.classList.remove('printing-student'); run(); });
+$('fprint').onclick = () => { document.body.classList.remove('printing-student'); PRINTING = true; fRun(); setTimeout(() => window.print(), 150); };
+$('fprintStudent').onclick = () => { document.body.classList.add('printing-student'); PRINTING = true; fRun(); setTimeout(() => window.print(), 150); };
+function view(v) { document.body.classList.toggle('v-in', v === 'in'); document.body.classList.toggle('v-out', v === 'out');
+  $('tIn').setAttribute('aria-selected', v === 'in'); $('tOut').setAttribute('aria-selected', v === 'out'); if (v === 'out') run(); }
+$('tIn').onclick = () => { view('in'); scrollTo(0, 0); }; $('tOut').onclick = () => { view('out'); scrollTo(0, 0); };
+addEventListener('resize', () => { clearTimeout(window._rt); window._rt = setTimeout(run, 120); });
+build(); run();
+</script>
+<script>
+
+// =====================================================================================
+// ===== FRAME MODE: open-chain frame/beam solver (statically determinate, 3 unknown reactions) =====
+// Global axes: X right (+), Y up (+), angles in degrees measured CCW from +X (0=يمين, 90=أعلى, 180=يسار, 270/-90=أسفل).
+// Local per-member axes: d = unit vector along member (from its start joint to its end joint), n = d rotated +90° (CCW).
+// Sign convention (matches Kassimali / the rest of this tool):
+//   N: tension (+) / compression (−).  V,M: computed via "start-side" free body (all loads+reactions between the
+//   chain's first joint and the cut), using N=-(F·d), V=F·n, M=-(Σ r×F) where r = load position − cut position.
+// =====================================================================================
+let fstate = null;
+const FPRESETS = {};
+function defaultFrame() {
+  return { joints: [{ type: 'pin' }, { type: 'free' }, { type: 'free' }, { type: 'roller' }],
+    members: [
+      { L: 5, ang: 90, loads: [], udl: null },
+      { L: 6, ang: 0, loads: [{ ang: 90, v: 40, x: 3, hdir: 1, vdir: 1 }], udl: null },
+      { L: 5, ang: 270, loads: [], udl: null }
+    ] };
+}
+try { const s = localStorage.getItem('frameLab_v1'); if (s) fstate = JSON.parse(s); } catch (e) {}
+if (!fstate) fstate = defaultFrame();
+const fsave = () => { try { localStorage.setItem('frameLab_v1', JSON.stringify(fstate)); } catch (e) {} };
+const fJointType = i => fstate.joints[i].type;
+const fSetJoint = (i, t) => { fstate.joints[i].type = t; };
+const fChainLen = j => fstate.members.slice(0, j).reduce((a, m) => a + m.L, 0);
+const fTotalLen = () => fChainLen(fstate.members.length);
+
+// ---------- geometry ----------
+function fGeometry(members) {
+  const joints = [{ x: 0, y: 0 }], dirs = [];
+  members.forEach(m => {
+    const rad = m.ang * Math.PI / 180, d = [Math.cos(rad), Math.sin(rad)];
+    dirs.push(d);
+    const p = joints[joints.length - 1];
+    joints.push({ x: p.x + m.L * d[0], y: p.y + m.L * d[1] });
+  });
+  return { joints, dirs };
+}
+function fPosAlong(geo, m, s) { const a = geo.joints[m], d = geo.dirs[m]; return { x: a.x + s * d[0], y: a.y + s * d[1] }; }
+
+// ---------- build solver model from fstate ----------
+function toFrameModel() {
+  const members = fstate.members.map(m => ({ L: m.L, ang: m.ang }));
+  const supports = [];
+  fstate.joints.forEach((j, i) => { if (j.type !== 'free') supports.push({ j: i, type: j.type }); });
+  const loads = [], udl = [];
+  fstate.members.forEach((m, mi) => {
+    (m.loads || []).forEach(ld => {
+      const rad = (ld.ang ?? 90) * Math.PI / 180, mag = Math.abs(ld.v);
+      // UI convention: hdir=+1 → arrow points right (+X, matches global). vdir=+1 → arrow points DOWN, i.e. −Y in the
+      // Y-up global frame used by the solver, so the vertical component gets an extra minus sign here.
+      const Fx = mag * Math.cos(rad) * (ld.hdir ?? 1), Fy = -mag * Math.sin(rad) * (ld.vdir ?? 1);
+      loads.push({ m: mi, s: Math.min(Math.max(ld.x, 0), m.L), Fx, Fy, mag, ang: ld.ang ?? 90, hdir: ld.hdir ?? 1, vdir: ld.vdir ?? 1 });
+    });
+    if (m.udl && Math.abs(m.udl.w) > 1e-9) {
+      const perp = m.udl.dir === 'perp';
+      let ux, uy;
+      if (perp) { const rad = m.ang * Math.PI / 180; ux = Math.sin(rad); uy = -Math.cos(rad); } // rotate d by -90 (points to one side); sign chosen so default reads as "into" the frame for typical cases
+      else { ux = 0; uy = -1; }
+      udl.push({ m: mi, w1: m.udl.w, w2: m.udl.w, ux, uy, dir: m.udl.dir });
+    }
+  });
+  return { members, supports, loads, udl };
+}
+
+// ---------- reactions (exactly 3 unknowns) ----------
+function fSolve3(rows) {
+  const A = rows.map(r => r.slice(0, 3)), b = rows.map(r => r[3]);
+  for (let c = 0; c < 3; c++) {
+    let p = c; for (let r = c + 1; r < 3; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+    if (Math.abs(A[p][c]) < 1e-9) return null;
+    [A[c], A[p]] = [A[p], A[c]]; [b[c], b[p]] = [b[p], b[c]];
+    for (let r = c + 1; r < 3; r++) { const m = A[r][c] / A[c][c]; if (!m) continue; for (let k = c; k < 3; k++) A[r][k] -= m * A[c][k]; b[r] -= m * b[c]; }
+  }
+  const x = [0, 0, 0];
+  for (let r = 2; r >= 0; r--) { let s = b[r]; for (let c = r + 1; c < 3; c++) s -= A[r][c] * x[c]; x[r] = s / A[r][r]; }
+  return x;
+}
+function udlResultant(mem, u, upto) {
+  const L = upto == null ? mem.L : upto;
+  const wAtL = u.w1 + (u.w2 - u.w1) * L / mem.L;
+  const Rmag = (u.w1 + wAtL) / 2 * L;
+  const xbar = Math.abs(u.w1 + wAtL) < 1e-12 ? L / 2 : L * (u.w1 / 3 + wAtL * 2 / 3) / (u.w1 + wAtL);
+  return { Rmag, xbar };
+}
+function fSolveReactions(model, geo) {
+  const unk = [];
+  model.supports.forEach(s => {
+    if (s.type === 'pin') unk.push({ j: s.j, comp: 'Rx' }, { j: s.j, comp: 'Ry' });
+    else if (s.type === 'roller') unk.push({ j: s.j, comp: 'Ry' });
+    else if (s.type === 'fixed') unk.push({ j: s.j, comp: 'Rx' }, { j: s.j, comp: 'Ry' }, { j: s.j, comp: 'M' });
+  });
+  if (unk.length !== 3) return { error: unk.length < 3 ? `آلية غير مستقرة: عدد ردود الأفعال (${unk.length}) أقل من 3.` : `منشأ غير محدد استاتيكياً: عدد ردود الأفعال (${unk.length}) أكبر من 3 — هذا الحل المبسط يعالج الحالة المحددة فقط.` };
+  const applied = [];
+  model.loads.forEach(ld => applied.push({ pos: fPosAlong(geo, ld.m, ld.s), F: { x: ld.Fx, y: ld.Fy } }));
+  model.udl.forEach(u => { const mem = model.members[u.m], { Rmag, xbar } = udlResultant(mem, u); applied.push({ pos: fPosAlong(geo, u.m, xbar), F: { x: Rmag * u.ux, y: Rmag * u.uy } }); });
+  const sumFx = applied.reduce((s, l) => s + l.F.x, 0), sumFy = applied.reduce((s, l) => s + l.F.y, 0);
+  const sumM = applied.reduce((s, l) => s + (l.pos.x * l.F.y - l.pos.y * l.F.x), 0);
+  const rows = [[0, 0, 0, -sumFx], [0, 0, 0, -sumFy], [0, 0, 0, -sumM]];
+  unk.forEach((u, i) => { const p = geo.joints[u.j]; if (u.comp === 'Rx') { rows[0][i] += 1; rows[2][i] += -p.y; } if (u.comp === 'Ry') { rows[1][i] += 1; rows[2][i] += p.x; } if (u.comp === 'M') rows[2][i] += 1; });
+  const sol = fSolve3(rows);
+  if (!sol) return { error: 'المنشأ غير مستقر (ميكانيزم) — الركائز الحالية لا تكفي لحفظ الاتزان.' };
+  const R = {}; model.supports.forEach(s => R[s.j] = { Rx: 0, Ry: 0, M: 0 });
+  unk.forEach((u, i) => R[u.j][u.comp] = sol[i]);
+  return { R };
+}
+
+// ---------- internal forces at (member m, distance s) via start-side free body ----------
+function fInternalAt(model, geo, R, m, s) {
+  const d = geo.dirs[m], n = [-d[1], d[0]], cut = fPosAlong(geo, m, s);
+  let Fx = 0, Fy = 0, Mz = 0;
+  const add = (pos, F) => { Fx += F.x; Fy += F.y; Mz += (pos.x - cut.x) * F.y - (pos.y - cut.y) * F.x; };
+  model.supports.forEach(sp => { if (sp.j <= m) { const r = R[sp.j]; add(geo.joints[sp.j], { x: r.Rx, y: r.Ry }); if (r.M) Mz += r.M; } });
+  model.loads.forEach(ld => { if (ld.m < m || (ld.m === m && ld.s <= s + 1e-9)) add(fPosAlong(geo, ld.m, ld.s), { x: ld.Fx, y: ld.Fy }); });
+  model.udl.forEach(u => {
+    if (u.m < m) { const mem = model.members[u.m], { Rmag, xbar } = udlResultant(mem, u); add(fPosAlong(geo, u.m, xbar), { x: Rmag * u.ux, y: Rmag * u.uy }); }
+    else if (u.m === m && s > 1e-12) { const { Rmag, xbar } = udlResultant(model.members[m], u, s); add(fPosAlong(geo, m, xbar), { x: Rmag * u.ux, y: Rmag * u.uy }); }
+  });
+  return { N: -(Fx * d[0] + Fy * d[1]), V: (Fx * n[0] + Fy * n[1]), M: -Mz };
+}
+
+// ==================================================================================
+// ===== طباعة حل الطالب (فريم): اشتقاق ردود الأفعال والقوى الداخلية خطوة بخطوة =====
+// النطاق الحالي: وثاقة واحدة، أو مفصلية+منزلقة (نفس نطاق وضع الكمرة). حالة 3 ركائز منزلقة (نادرة) بلا اشتقاق تفصيلي.
+// ==================================================================================
+function frameLoadTerms(model, geo) {
+  const terms = [];
+  model.loads.forEach(ld => { const pos = fPosAlong(geo, ld.m, ld.s);
+    terms.push({ label: `حمل ${fmt(ld.mag)} kN على الذراع ${LET(ld.m)}→${LET(ld.m + 1)} عند ${fmt(ld.s)} m منه (Fx=${fmt(ld.Fx)}, Fy=${fmt(ld.Fy)} kN)`, pos, F: { x: ld.Fx, y: ld.Fy } }); });
+  model.udl.forEach(u => { const mem = model.members[u.m], { Rmag, xbar } = udlResultant(mem, u), pos = fPosAlong(geo, u.m, xbar);
+    terms.push({ label: `محصلة حمل موزّع ${fmt(u.w1)} kN/m على الذراع ${LET(u.m)}→${LET(u.m + 1)} = ${fmt(Rmag)} kN عند مركز ثقله`, pos, F: { x: Rmag * u.ux, y: Rmag * u.uy } }); });
+  return terms;
+}
+function classifyFrameCase(model) {
+  const fixed = model.supports.filter(s => s.type === 'fixed'), pins = model.supports.filter(s => s.type === 'pin'), rollers = model.supports.filter(s => s.type === 'roller');
+  if (fixed.length === 1 && pins.length === 0 && rollers.length === 0) return { kind: 'cantilever', fixed: fixed[0] };
+  if (fixed.length === 0 && pins.length === 1 && rollers.length === 1) return { kind: 'simple', pin: pins[0], roller: rollers[0] };
+  return null;
+}
+function frameReactionDerivation(model, geo) {
+  const cs = classifyFrameCase(model), terms = frameLoadTerms(model, geo);
+  const sumFx = terms.reduce((s, t) => s + t.F.x, 0), sumFy = terms.reduce((s, t) => s + t.F.y, 0);
+  if (!cs) return `<p class="small">توزيع الركائز هذا خارج نطاق الاشتقاق التفصيلي المبسّط حالياً (يلزم حل المعادلات الثلاث آنياً). ردود الأفعال في الجدول أعلاه محسوبة ودقيقة رياضياً رغم ذلك.</p>`;
+  if (cs.kind === 'cantilever') {
+    const jf = cs.fixed.j, pf = geo.joints[jf]; let momSum = 0; const lines = [];
+    terms.forEach(t => { const c = (t.pos.x - pf.x) * t.F.y - (t.pos.y - pf.y) * t.F.x; momSum += c; lines.push(`<tr><td>${t.label}</td><td class="n">${fmt(c)}</td></tr>`); });
+    const Mf = -momSum;
+    return `<p>فريم بوثاقة واحدة عند ${LET(jf)}: تُحل الردود الثلاث مباشرة من معادلات الاتزان الثلاث.</p>
+      <p><b>ΣFx=0</b> ⇒ <span class="eqi">Rx = ${fmt(-sumFx)} kN</span> &nbsp; <b>ΣFy=0</b> ⇒ <span class="eqi">Ry = ${fmt(-sumFy)} kN</span></p>
+      <p><b>ΣM حول ${LET(jf)} = 0</b> (عكس عقارب الساعة موجب):</p>
+      <div class="tbl"><table><tr><th>البند</th><th>المساهمة (kN·m)</th></tr>${lines.join('')}
+      <tr><td><b>المجموع</b></td><td class="n"><b>${fmt(momSum)}</b></td></tr></table></div>
+      <p><span class="eqi">M = −(${fmt(momSum)}) = ${fmt(Mf)} kN·m</span></p>`;
+  }
+  const jp = cs.pin.j, jr = cs.roller.j, pp = geo.joints[jp], pr = geo.joints[jr]; let momSum = 0; const lines = [];
+  terms.forEach(t => { const c = (t.pos.x - pp.x) * t.F.y - (t.pos.y - pp.y) * t.F.x; momSum += c; lines.push(`<tr><td>${t.label}</td><td class="n">${fmt(c)}</td></tr>`); });
+  const armX = pr.x - pp.x;
+  if (Math.abs(armX) < 1e-6) return `<p class="small">وضع الركيزتين هنا (متطابقتان في الإحداثي الأفقي) يجعل معادلة العزم حول ${LET(jp)} لا تحدد رد فعل ${LET(jr)} منفرداً؛ القيم في الجدول محسوبة عددياً من حل المعادلات الثلاث آنياً.</p>`;
+  const RyRoller = -momSum / armX, RxPin = -sumFx, RyPin = -sumFy - RyRoller;
+  return `<p><b>الخطوة 1 — ΣM حول ${LET(jp)} (المفصلية) = 0</b> (عكس عقارب الساعة موجب)، فتُحرَّر المعادلة من ردَّي فعل ${LET(jp)} (لا ذراع لهما حولها):</p>
+    <div class="tbl"><table><tr><th>البند</th><th>المساهمة (kN·m)</th></tr>${lines.join('')}
+    <tr><td><b>مجموع عزوم الأحمال</b></td><td class="n"><b>${fmt(momSum)}</b></td></tr></table></div>
+    <p><span class="eqi">${fmt(momSum)} + (${fmt(armX)})×R_${LET(jr)} = 0  ⇒  R_${LET(jr)} = ${fmt(RyRoller)} kN</span></p>
+    <p><b>الخطوة 2 — ΣFx=0:</b> <span class="eqi">Rx_${LET(jp)} = ${fmt(RxPin)} kN</span></p>
+    <p><b>الخطوة 3 — ΣFy=0:</b> <span class="eqi">Ry_${LET(jp)} = ${fmt(-sumFy)} − ${fmt(RyRoller)} = ${fmt(RyPin)} kN</span></p>`;
+}
+// اشتقاق N/V/M عند نقطة الاستعلام بطريقة المقاطع (عام: يعمل بردود أفعال معروفة أياً كانت طريقة إيجادها)
+function frameQueryDerivation(model, geo, R, m, s) {
+  const d = geo.dirs[m], n = [-d[1], d[0]], cut = fPosAlong(geo, m, s);
+  const rows = []; let Fx = 0, Fy = 0, Mz = 0;
+  const add = (label, pos, F, coupleM) => { Fx += F.x; Fy += F.y; let dMz = (pos.x - cut.x) * F.y - (pos.y - cut.y) * F.x; if (coupleM) dMz += coupleM; Mz += dMz; rows.push({ label, dMz }); };
+  model.supports.forEach(sp => { if (sp.j <= m) { const r = R[sp.j]; add(`رد الفعل عند ${LET(sp.j)} (Rx=${fmt(r.Rx)}, Ry=${fmt(r.Ry)} kN${r.M ? `، M=${fmt(r.M)} kN·m` : ''})`, geo.joints[sp.j], { x: r.Rx, y: r.Ry }, r.M || 0); } });
+  model.loads.forEach(ld => { if (ld.m < m || (ld.m === m && ld.s <= s + 1e-9)) add(`حمل ${fmt(ld.mag)} kN على ${LET(ld.m)}→${LET(ld.m + 1)} عند ${fmt(ld.s)} m منه`, fPosAlong(geo, ld.m, ld.s), { x: ld.Fx, y: ld.Fy }); });
+  model.udl.forEach(u => {
+    if (u.m < m) { const mem = model.members[u.m], { Rmag, xbar } = udlResultant(mem, u); add(`محصلة حمل موزع كامل على ${LET(u.m)}→${LET(u.m + 1)} = ${fmt(Rmag)} kN`, fPosAlong(geo, u.m, xbar), { x: Rmag * u.ux, y: Rmag * u.uy }); }
+    else if (u.m === m && s > 1e-9) { const { Rmag, xbar } = udlResultant(model.members[m], u, s); if (Math.abs(Rmag) > 1e-9) add(`محصلة الجزء المقطوع من الحمل الموزع = ${fmt(Rmag)} kN`, fPosAlong(geo, m, xbar), { x: Rmag * u.ux, y: Rmag * u.uy }); }
+  });
+  const N = -(Fx * d[0] + Fy * d[1]), V = (Fx * n[0] + Fy * n[1]), M = -Mz;
+  return { N, V, M, rows };
+}
+function buildFrameStudentReport(model, geo, R) {
+  const bi = $('fStudentInputs'), bd = $('fStudentDerivation'); if (!bi || !bd) return;
+  const terms = frameLoadTerms(model, geo);
+  bi.innerHTML = `<h2 class="sec">حل الطالب — ملخص المدخلات</h2>
+    <div class="grid2">
+      <div class="tbl"><table><tr><th>#</th><th>الذراع</th><th>الطول (m)</th><th>الزاوية°</th></tr>
+      ${model.members.map((mm, j) => `<tr><td>${j + 1}</td><td>${LET(j)} → ${LET(j + 1)}</td><td class="n">${fmt(mm.L)}</td><td class="n">${fmt(mm.ang)}</td></tr>`).join('')}</table></div>
+      <div class="tbl"><table><tr><th>المفصل</th><th>النوع</th></tr>
+      ${fstate.joints.map((jj, i) => `<tr><td>${LET(i)}</td><td>${SUPN[jj.type]}</td></tr>`).join('')}</table></div>
+    </div>
+    ${terms.length ? `<div class="tbl"><table><tr><th>الأحمال المطبَّقة</th></tr>${terms.map(t => `<tr><td>${t.label}</td></tr>`).join('')}</table></div>` : '<p class="small">لا توجد أحمال مطبَّقة.</p>'}`;
+  bd.innerHTML = `<h2 class="sec">اشتقاق ردود الأفعال خطوة بخطوة</h2>${frameReactionDerivation(model, geo)}`;
+}
+
+// ---------- sampling per member for diagrams ----------
+function fSample(model, geo, R) {
+  const out = [];
+  model.members.forEach((mem, m) => {
+    const pts = new Set([0, mem.L]);
+    model.loads.forEach(ld => { if (ld.m === m) pts.add(ld.s); });
+    for (let i = 0; i <= 24; i++) pts.add(mem.L * i / 24);
+    const xs = [...pts].sort((a, b) => a - b);
+    xs.forEach((s, i) => {
+      const eps = 1e-6;
+      if (i > 0 && s - xs[i - 1] > 1e-7) { const r0 = fInternalAt(model, geo, R, m, s - eps); out.push({ m, s: s - eps, ...r0 }); }
+      const r = fInternalAt(model, geo, R, m, s);
+      out.push({ m, s, ...r });
+    });
+  });
+  return out;
+}
+
+// ---------- UI: builder ----------
+function fArmIcon(ang) {
+  const r = (ang || 0) * Math.PI / 180, x2 = 18 + 14 * Math.cos(r), y2 = 15 - 14 * Math.sin(r);
+  return `<svg viewBox="0 0 36 30"><line x1="18" y1="15" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="18" cy="15" r="2" fill="currentColor"/></svg>`;
+}
+function fJointCard(i) {
+  const d = document.createElement('div'); d.className = 'node';
+  const n = fstate.members.length;
+  const q = i === 0 ? 'نوع الركيزة عند بداية الفريم؟' : i === n ? 'نوع الركيزة عند نهاية الفريم؟' : `هل يوجد ركيزة عند المفصل ${LET(i)} (بين الذراعين ${i} و${i + 1})؟`;
+  d.innerHTML = `<div class="q"><b>${LET(i)}</b>${q}</div>`;
+  const g = document.createElement('div'); g.className = 'sups';
+  ['free', 'pin', 'roller', 'fixed'].forEach(t => {
+    const b = document.createElement('button'); b.setAttribute('aria-pressed', fJointType(i) === t);
+    b.innerHTML = supIcon(t) + (t === 'free' ? 'بدون' : SUPN[t]);
+    b.onclick = () => { fSetJoint(i, t); fBuild(); fRun(); }; g.appendChild(b);
+  });
+  d.appendChild(g); return d;
+}
+function fLoadCard(mem, mi, ld, k) {
+  const d = document.createElement('div'); d.className = 'ld';
+  const t = document.createElement('div'); t.className = 't';
+  t.innerHTML = `<b>حمل مركز</b>`;
+  t.append(numIn(ld.v, v => ld.v = Math.abs(v)), document.createTextNode('kN'));
+  const x = document.createElement('button'); x.className = 'x'; x.textContent = '×'; x.title = 'حذف'; x.onclick = () => { mem.loads.splice(k, 1); fBuild(); fRun(); }; t.append(x);
+  d.appendChild(t);
+  d.appendChild(slider('المسافة من بداية الذراع', ld.x, mem.L, v => ld.x = v, `fsl-${mi}-${k}`));
+  const ar = document.createElement('div'); ar.className = 'sl'; ar.style.gridTemplateColumns = 'auto auto auto auto';
+  const al = document.createElement('span'); al.textContent = 'الزاوية من الأفقي (عامة)';
+  const ain = document.createElement('input'); ain.type = 'number'; ain.min = 0; ain.max = 90; ain.step = 5; ain.value = ld.ang ?? 90;
+  ain.oninput = () => { ld.ang = Math.min(90, Math.max(0, num(ain.value, 90))); fRun(); };
+  const hs = document.createElement('select'); hs.innerHTML = '<option value="1">أفقياً →</option><option value="-1">أفقياً ←</option>'; hs.value = ld.hdir ?? 1; hs.onchange = () => { ld.hdir = +hs.value; fRun(); };
+  const vs = document.createElement('select'); vs.innerHTML = '<option value="1">رأسياً ↓</option><option value="-1">رأسياً ↑</option>'; vs.value = ld.vdir ?? 1; vs.onchange = () => { ld.vdir = +vs.value; fRun(); };
+  ar.append(al, ain, hs, vs); d.appendChild(ar);
+  return d;
+}
+function fArmCard(j) {
+  const mem = fstate.members[j], d = document.createElement('div'); d.className = 'span';
+  const hd = document.createElement('div'); hd.className = 'hd';
+  hd.innerHTML = `<b>الذراع ${j + 1}</b><span class="small">من ${LET(j)} إلى ${LET(j + 1)}</span>`;
+  if (fstate.members.length > 1) { const x = document.createElement('button'); x.className = 'x'; x.textContent = '×'; x.title = 'حذف الذراع'; x.onclick = () => { fstate.members.splice(j, 1); fstate.joints.splice(j + 1, 1); fBuild(); fRun(); }; hd.append(x); }
+  d.appendChild(hd);
+  const r1 = document.createElement('div'); r1.className = 'qrow';
+  r1.append('الطول', numIn(mem.L, v => mem.L = Math.max(0.2, v), 0.5, () => fBuild()), 'm');
+  d.appendChild(r1);
+  const r2 = document.createElement('div'); r2.className = 'qrow'; r2.append('الزاوية من الأفقي (° عكس عقارب الساعة)');
+  const ang = document.createElement('input'); ang.type = 'number'; ang.step = 15; ang.value = mem.ang;
+  ang.oninput = () => { mem.ang = num(ang.value, mem.ang); fBuild(); fRun(); }; r2.append(ang, '°'); d.appendChild(r2);
+  const chips = document.createElement('div'); chips.className = 'adds';
+  [['أفقي →', 0], ['رأسي ↑', 90], ['أفقي ←', 180], ['رأسي ↓', 270]].forEach(([l, a]) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => { mem.ang = a; fBuild(); fRun(); }; chips.appendChild(b); });
+  d.appendChild(chips);
+  mem.loads.forEach((ld, k) => d.appendChild(fLoadCard(mem, j, ld, k)));
+  if (mem.udl) {
+    const w = document.createElement('div'); w.className = 'ld';
+    const tt = document.createElement('div'); tt.className = 't'; tt.innerHTML = '<b>حمل موزع منتظم</b>';
+    tt.append(numIn(mem.udl.w, v => mem.udl.w = v), document.createTextNode('kN/m'));
+    const xx = document.createElement('button'); xx.className = 'x'; xx.textContent = '×'; xx.onclick = () => { mem.udl = null; fBuild(); fRun(); }; tt.append(xx);
+    w.appendChild(tt);
+    const sel = document.createElement('select'); sel.innerHTML = '<option value="vert">رأسي (اتجاه الجاذبية)</option><option value="perp">عمودي على محور الذراع</option>';
+    sel.value = mem.udl.dir; sel.onchange = () => { mem.udl.dir = sel.value; fRun(); }; sel.style.marginTop = '.3rem'; w.appendChild(sel);
+    d.appendChild(w);
+  }
+  const ad = document.createElement('div'); ad.className = 'adds';
+  const bp = document.createElement('button'); bp.textContent = '+ حمل مركز'; bp.onclick = () => { mem.loads.push({ x: +(mem.L / 2).toFixed(2), v: 20, ang: 90, hdir: 1, vdir: 1 }); fBuild(); fRun(); }; ad.appendChild(bp);
+  if (!mem.udl) { const bu = document.createElement('button'); bu.textContent = '+ حمل موزع'; bu.onclick = () => { mem.udl = { w: 10, dir: 'vert' }; fBuild(); fRun(); }; ad.appendChild(bu); }
+  d.appendChild(ad);
+  return d;
+}
+function fBuild() {
+  const B = $('fbuilder'); B.innerHTML = '';
+  B.appendChild(fJointCard(0));
+  fstate.members.forEach((m, j) => { B.appendChild(fArmCard(j)); B.appendChild(fJointCard(j + 1)); });
+  const add = document.createElement('button'); add.className = 'addspan'; add.textContent = '+ إضافة ذراع جديد';
+  add.onclick = () => { fstate.members.push({ L: 4, ang: 0, loads: [], udl: null }); fstate.joints.push({ type: 'free' }); fBuild(); fRun(); };
+  B.appendChild(add);
+  const h = document.createElement('p'); h.className = 'hint'; h.textContent = 'اجعل مجموع مركبات ردود الأفعال في نقطتي الارتكاز = 3 بالضبط (مفصلية+منزلقة، أو وثاقة+طرف حر) ليكون الفريم محدداً استاتيكياً وقابلاً للحل بهذه الطريقة.'; B.appendChild(h);
+  fBuildQPick();
+}
+
+function fBuildQPick() {
+  const q = $('qpick'); q.innerHTML = '';
+  const ms = document.createElement('select');
+  fstate.members.forEach((m, i) => { const o = document.createElement('option'); o.value = i; o.textContent = `الذراع ${i + 1} (${LET(i)}→${LET(i + 1)})`; ms.appendChild(o); });
+  ms.value = fstate.qm ?? 0; ms.onchange = () => { fstate.qm = +ms.value; fstate.qs = 0; fBuildQPick(); fRun(); };
+  q.append('عند: ', ms);
+  const mem = fstate.members[ms.value] || fstate.members[0];
+  const sSlider = document.createElement('input'); sSlider.type = 'range'; sSlider.min = 0; sSlider.max = mem.L; sSlider.step = 0.05; sSlider.value = fstate.qs ?? 0; sSlider.style.width = '10rem';
+  const out = document.createElement('output'); out.textContent = fmt(fstate.qs ?? 0) + ' m';
+  sSlider.oninput = () => { fstate.qs = +sSlider.value; out.textContent = fmt(fstate.qs) + ' m'; fRun(); };
+  q.append(' مسافة ', sSlider, out, ' من بداية الذراع');
+}
+Object.assign(FPRESETS, {
+  'بورتال بسيط (مفصلية + منزلقة)': defaultFrame,
+  'كتلة L (وثاقة + حر)': () => ({ joints: [{ type: 'fixed' }, { type: 'free' }, { type: 'free' }],
+    members: [ { L: 4, ang: 90, loads: [{ x: 4, v: 25, ang: 0, hdir: 1, vdir: 1 }], udl: null }, { L: 3, ang: 0, loads: [], udl: { w: 12, dir: 'vert' } } ] })
+});
+
+// ---------- drawing ----------
+function fFrame(svg, H, Ltot) { const W = PRINTING ? 720 : Math.max(320, svg.parentNode.clientWidth || 800); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H); svg.innerHTML = ''; const m = { l: 50, r: 50 }; const sx = x => m.l + (W - m.l - m.r) * x / Ltot; return { W, sx, m }; }
+function fDrawDiag(svg, samples, key, color, dec) {
+  const Ltot = fTotalLen(), H = 190, { W, sx } = fFrame(svg, H, Ltot), top = 30, bot = H - 22;
+  const toX = s => sx(fChainLen(s.m) + s.s);
+  const vals = samples.map(s => s[key]); let mx = Math.max(0, ...vals), mn = Math.min(0, ...vals); if (mx - mn < 1e-9) { mx = 1; mn = -1; }
+  const sy = v => { const t = (v - mn) / (mx - mn); return bot - t * (bot - top); }, y0 = sy(0);
+  let acc = 0; fstate.members.forEach((mm, i) => { el('line', { x1: sx(acc), y1: top - 8, x2: sx(acc), y2: bot + 6, stroke: 'var(--line2)', 'stroke-dasharray': '3 3' }, svg); acc += mm.L; });
+  el('line', { x1: sx(acc), y1: top - 8, x2: sx(acc), y2: bot + 6, stroke: 'var(--line2)', 'stroke-dasharray': '3 3' }, svg);
+  const byM = {}; samples.forEach(s => (byM[s.m] = byM[s.m] || []).push(s));
+  let dpath = ''; Object.values(byM).forEach(arr => { dpath += `M ${toX(arr[0])} ${y0} ` + arr.map(s => `L ${toX(s).toFixed(2)} ${sy(s[key]).toFixed(2)}`).join(' ') + ` L ${toX(arr[arr.length - 1])} ${y0} Z `; });
+  el('path', { d: dpath, fill: color, 'fill-opacity': .18 }, svg);
+  let ln = ''; samples.forEach((s, i) => ln += (i ? 'L' : 'M') + ` ${toX(s).toFixed(2)} ${sy(s[key]).toFixed(2)} `);
+  el('path', { d: ln, fill: 'none', stroke: color, 'stroke-width': 2.1, 'stroke-linejoin': 'round' }, svg);
+  el('line', { x1: sx(0), y1: y0, x2: sx(Ltot), y2: y0, stroke: 'var(--beam)', 'stroke-width': 1.2 }, svg);
+  const amax = Math.max(Math.abs(mx), Math.abs(mn));
+  const extremes = [];
+  Object.values(byM).forEach(arr => { let best = arr[0]; arr.forEach(s => { if (Math.abs(s[key]) > Math.abs(best[key])) best = s; }); if (Math.abs(best[key]) > amax * 0.03) extremes.push(best); arr.forEach((s, i) => { if (i > 0 && i < arr.length - 1 && Math.abs(arr[i - 1][key] - s[key]) > amax * 0.05) extremes.push(arr[i - 1], s); }); });
+  const placed = [];
+  extremes.forEach(s => { const X = toX(s), Y = sy(s[key]), ty = Y < y0 ? Y - 6 : Y + 15, txt = fmt(s[key], dec), wpx = txt.length * 6.8;
+    const box = { x1: X - wpx / 2 - 2, x2: X + wpx / 2 + 2, y1: ty - 12, y2: ty + 3 };
+    if (placed.length > 26 || placed.some(p => !(box.x2 < p.x1 || box.x1 > p.x2 || box.y2 < p.y1 || box.y1 > p.y2))) return; placed.push(box);
+    el('circle', { cx: X, cy: Y, r: 2.4, fill: color }, svg);
+    el('text', { x: X, y: ty, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 600, fill: color }, svg, txt); });
+}
+function fDrawModel(svg, R) {
+  const geo = fGeometry(fstate.members), pts = geo.joints;
+  const H = 340, { W } = fFrame(svg, H, fTotalLen());
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  const pad = 46, minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const spanX = Math.max(0.5, maxX - minX), spanY = Math.max(0.5, maxY - minY);
+  const scale = Math.min((W - 2 * pad) / spanX, (H - 2 * pad - 40) / spanY);
+  const ox = (W - spanX * scale) / 2 - minX * scale, oy = H - pad - 30 - (0 - minY) * scale;
+  const px = p => ox + p.x * scale, py = p => oy - p.y * scale;
+  const B = 'var(--beam)', F = 'var(--force)', M = 'var(--muted)';
+  // members
+  fstate.members.forEach((mem, i) => { const a = pts[i], b = pts[i + 1]; el('line', { x1: px(a), y1: py(a), x2: px(b), y2: py(b), stroke: B, 'stroke-width': 5, 'stroke-linecap': 'round' }, svg);
+    const mx = (px(a) + px(b)) / 2, my = (py(a) + py(b)) / 2, ang = Math.atan2(py(b) - py(a), px(b) - px(a)), nx = -Math.sin(ang), ny = Math.cos(ang);
+    el('text', { x: mx + nx * 16, y: my + ny * 16, 'text-anchor': 'middle', 'font-size': 11.5, fill: M }, svg, `${fmt(mem.L, 2)} m`); });
+  // UDL
+  fstate.members.forEach((mem, i) => { if (!mem.udl || Math.abs(mem.udl.w) < 1e-9) return; const a = pts[i], b = pts[i + 1], d = geo.dirs[i]; const perp = mem.udl.dir === 'perp';
+    const nrm = perp ? [Math.sin(mem.ang * Math.PI / 180), -Math.cos(mem.ang * Math.PI / 180)] : [0, -1];
+    const nn = 6, off = 26;
+    for (let k = 0; k <= nn; k++) { const t = k / nn; const qx = a.x + (b.x - a.x) * t, qy = a.y + (b.y - a.y) * t;
+      const x1 = px({ x: qx, y: qy }) - nrm[0] * off, y1 = py({ x: qx, y: qy }) + nrm[1] * off, x2 = px({ x: qx, y: qy }), y2 = py({ x: qx, y: qy });
+      arrow(svg, x1, y1, x2, y2, F, 1); }
+    const mx = (px(a) + px(b)) / 2 - nrm[0] * (off + 12), my = (py(a) + py(b)) / 2 + nrm[1] * (off + 12);
+    el('text', { x: mx, y: my, 'text-anchor': 'middle', 'font-size': 11.5, fill: F, 'font-weight': 600 }, svg, `${fmt(mem.udl.w, 1)} kN/m`); });
+  // point loads
+  fstate.members.forEach((mem, i) => (mem.loads || []).forEach(ld => { const pos = fPosAlong(geo, i, Math.min(Math.max(ld.x, 0), mem.L));
+    const rad = (ld.ang ?? 90) * Math.PI / 180, len = 46, hs = ld.hdir ?? 1, vs = ld.vdir ?? 1;
+    const P = px(pos), Pv = py(pos); const ex = P - len * Math.cos(rad) * hs, ey = Pv - len * Math.sin(rad) * vs;
+    arrow(svg, ex, ey, P, Pv, F, 2.2); el('circle', { cx: ex, cy: ey, r: 3, fill: F }, svg);
+    el('text', { x: ex, y: ey - 6, 'text-anchor': 'middle', 'font-size': 11.5, fill: F, 'font-weight': 600 }, svg, `${fmt(Math.abs(ld.v), 1)}kN`); }));
+  // joint labels + supports
+  pts.forEach((p, i) => { const t = fJointType(i), X = px(p), Y = py(p);
+    if (t === 'fixed') { const memDir = i === 0 ? geo.dirs[0] : geo.dirs[geo.dirs.length - 1]; const nx = -memDir[1], ny = -memDir[0]; const ang2 = Math.atan2(-ny, nx);
+      el('line', { x1: X - 14 * Math.cos(ang2), y1: Y - 14 * Math.sin(ang2), x2: X + 14 * Math.cos(ang2), y2: Y + 14 * Math.sin(ang2), stroke: B, 'stroke-width': 4 }, svg);
+      for (let q = -12; q <= 12; q += 6) { const bx = X + q * Math.cos(ang2), by = Y + q * Math.sin(ang2); el('line', { x1: bx, y1: by, x2: bx - 6 * (memDir[1] > 0 ? -1 : 1), y2: by + 6, stroke: B, 'stroke-width': 1 }, svg); } }
+    else if (t === 'pin' || t === 'roller') { el('polygon', { points: `${X},${Y} ${X - 10},${Y + 18} ${X + 10},${Y + 18}`, fill: 'none', stroke: B, 'stroke-width': 1.7 }, svg);
+      if (t === 'roller') { el('circle', { cx: X - 5, cy: Y + 22, r: 3, fill: 'none', stroke: B }, svg); el('circle', { cx: X + 5, cy: Y + 22, r: 3, fill: 'none', stroke: B }, svg); el('line', { x1: X - 13, y1: Y + 26, x2: X + 13, y2: Y + 26, stroke: B }, svg); }
+      else { el('line', { x1: X - 13, y1: Y + 19, x2: X + 13, y2: Y + 19, stroke: B }, svg); for (let q = -12; q < 12; q += 5) el('line', { x1: X + q, y1: Y + 24, x2: X + q + 4, y2: Y + 19, stroke: B, 'stroke-width': .8 }, svg); } }
+    else el('circle', { cx: X, cy: Y, r: 4, fill: 'var(--panel)', stroke: B, 'stroke-width': 2 }, svg);
+    el('text', { x: X + 12, y: Y - 10, 'font-size': 12.5, 'font-weight': 700, fill: 'var(--shear)' }, svg, LET(i)); });
+  // reactions
+  Object.keys(R || {}).forEach(ji => { const j = +ji, r = R[ji], p = pts[j], X = px(p), Y = py(p);
+    if (Math.abs(r.Ry) > 1e-6) { const up = r.Ry >= 0; arrow(svg, X, up ? Y + 60 : Y + 30, X, up ? Y + 30 : Y + 60, F, 2); el('text', { x: X + 8, y: Y + 72, 'font-size': 11, 'font-weight': 600, fill: F }, svg, `Ry=${fmt(r.Ry, 1)}`); }
+    if (Math.abs(r.Rx) > 1e-6) { const right = r.Rx >= 0; arrow(svg, right ? X - 46 : X + 46, Y, right ? X - 16 : X + 16, Y, 'var(--comp)', 2); el('text', { x: X, y: Y - 20, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 600, fill: 'var(--comp)' }, svg, `Rx=${fmt(r.Rx, 1)}`); }
+    if (r.M && Math.abs(r.M) > 1e-6) el('text', { x: X, y: Y + 86, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 600, fill: F }, svg, `M=${fmt(Math.abs(r.M), 1)} ${r.M > 0 ? '↺' : '↻'}`); });
+  svgWatermark(svg, W, H);
+  return geo;
+}
+
+// ---------- run ----------
+let flast = null;
+function fRun() {
+  fsave();
+  const E = $('ferr'); E.classList.remove('on'); E.innerHTML = '';
+  const model = toFrameModel(), geo = fGeometry(model.members);
+  const sol = fSolveReactions(model, geo);
+  if (sol.error) { E.innerHTML = `<b>${sol.error}</b>`; E.classList.add('on'); fDrawModel($('fgModel'), {}); ['fgN', 'fgV', 'fgM'].forEach(id => $(id).innerHTML = ''); $('ftR').innerHTML = ''; $('ftK').innerHTML = ''; $('qexplain').innerHTML = ''; if ($('fStudentInputs')) $('fStudentInputs').innerHTML = ''; if ($('fStudentDerivation')) $('fStudentDerivation').innerHTML = ''; return; }
+  const R = sol.R; flast = { model, geo, R };
+  fDrawModel($('fgModel'), R);
+  buildFrameStudentReport(model, geo, R);
+  const S = fSample(model, geo, R);
+  fDrawDiag($('fgN'), S, 'N', 'var(--comp)', 2);
+  fDrawDiag($('fgV'), S, 'V', 'var(--shear)', 2);
+  fDrawDiag($('fgM'), S, 'M', 'var(--moment)', 2);
+  // reactions table
+  $('ftR').innerHTML = `<tr><th>المفصل</th><th>Rx (kN)</th><th>Ry (kN)</th><th>M (kN·m)</th></tr>` +
+    Object.keys(R).map(j => `<tr><td><b>${LET(+j)}</b> <span class="small">${SUPN[fJointType(+j)]}</span></td><td class="n f">${fmt(R[j].Rx)}</td><td class="n f">${fmt(R[j].Ry)}</td><td class="n f">${R[j].M ? fmt(Math.abs(R[j].M)) + (R[j].M > 0 ? ' ↺' : ' ↻') : '—'}</td></tr>`).join('');
+  const allN = S.map(s => s.N), allV = S.map(s => s.V), allM = S.map(s => s.M);
+  const maxAbs = a => a.reduce((p, v) => Math.abs(v) > Math.abs(p) ? v : p, 0);
+  $('ftK').innerHTML = `<tr><th>الكمية</th><th>القيمة القصوى</th></tr>
+    <tr><td>أقصى محورية |N|</td><td class="n">${fmt(Math.abs(maxAbs(allN)))} kN (${maxAbs(allN) < 0 ? 'ضغط' : 'شد'})</td></tr>
+    <tr><td>أقصى قص |V|</td><td class="n">${fmt(Math.abs(maxAbs(allV)))} kN</td></tr>
+    <tr><td>أقصى عزم |M|</td><td class="n">${fmt(Math.abs(maxAbs(allM)))} kN·m</td></tr>`;
+  // query point breakdown
+  const qm = Math.min(fstate.qm ?? 0, model.members.length - 1), mem = model.members[qm], qs = Math.min(Math.max(fstate.qs ?? 0, 0), mem.L);
+  const q = fInternalAt(model, geo, R, qm, qs);
+  const qd = frameQueryDerivation(model, geo, R, qm, qs);
+  $('qexplain').innerHTML = `<h3>عند الذراع ${qm + 1} (${LET(qm)}→${LET(qm + 1)})، على بعد ${fmt(qs)} m من ${LET(qm)}</h3>
+    <p>باستخدام طريقة المقاطع مع الجزء الممتد من بداية السلسلة (${LET(0)}) حتى نقطة القطع (يشمل ردود الأفعال والأحمال الواقعة قبلها):</p>
+    <div class="tbl"><table><tr><th>القوة المحورية N</th><th>قوة القص V</th><th>عزم الانحناء M</th></tr>
+    <tr><td class="n f">${fmt(q.N)} kN ${q.N < 0 ? '(ضغط)' : q.N > 0 ? '(شد)' : ''}</td><td class="n f">${fmt(q.V)} kN</td><td class="n f">${fmt(q.M)} kN·m</td></tr></table></div>
+    ${qd.rows.length ? `<div class="tbl"><table><tr><th>البند</th><th>مساهمة العزم حول نقطة القطع</th></tr>
+    ${qd.rows.map(rr => `<tr><td>${rr.label}</td><td class="n">${fmt(rr.dMz)}</td></tr>`).join('')}</table></div>` : ''}
+    <p class="small">الإشارة: N موجب = شد، سالب = ضغط. V وM بنفس اصطلاح جزء الكمرة (طريقة المقاطع من الطرف الأول للسلسلة).</p>`;
+  fnote(model);
+}
+function fnote(model) {
+  const Rc = model.supports.reduce((a, s) => a + (s.type === 'fixed' ? 3 : s.type === 'pin' ? 2 : 1), 0);
+  $('fnote').innerHTML = `<h3>توضيح علمي</h3>
+  <p><b>التحقق من التحديد الاستاتيكي:</b> عدد مركبات ردود الأفعال = ${Rc}. لحل هذا الفريم بالاتزان المباشر (بلا طرق إضافية) يلزم أن يساوي 3 بالضبط — وهذا محقق هنا.</p>
+  <p><b>خطوات الحل</b> (كما في كتاب Kassimali، القسم 5.6): (1) التحقق من التحديد الاستاتيكي، (2) إيجاد ردود الأفعال من اتزان الفريم كاملاً، (3) قطع كل عنصر على حدة وإيجاد N وV وM بطريقة المقاطع، (4) رسم المخططات لكل عنصر على محوره المحلي.</p>
+  <p class="small">القوة المحورية موجبة = شد، سالبة = ضغط. القص والعزم بنفس اصطلاح وضع الكمرة (القص موجب لأعلى يسار المقطع، والعزم موجب يعني تقعراً نحو الجهة الموجبة من محور العنصر المحلي).</p>`;
+}
+
+// ---------- mode switching ----------
+function clearSolvedUI() {
+  const el = $('solvedExplain'); if (el) el.innerHTML = '';
+  document.querySelectorAll('#solvedChips button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+}
+function setMode(m, keepExplain) {
+  const beam = m === 'beam';
+  $('modeBeam').setAttribute('aria-selected', beam);
+  $('modeFrame').setAttribute('aria-selected', !beam);
+  $('beamMain').style.display = beam ? '' : 'none';
+  $('frameMain').style.display = beam ? 'none' : '';
+  $('pageTitle').textContent = beam ? 'مختبر تحليل الكمرات' : 'مختبر تحليل الفريمات';
+  $('pageSub').textContent = beam ? 'ابنِ الكمرة بحراً بحراً، ضع الأحمال، واقرأ مخططي القص والعزم وأثرهما على المادة' : 'ابنِ الفريم ذراعاً ذراعاً، ضع الأحمال، واقرأ مخططات المحوري والقص والعزم';
+  try { localStorage.setItem('lab_mode', m); } catch (e) {}
+  if (!beam) { fBuild(); fRun(); }
+  if (!keepExplain) clearSolvedUI();
+}
+$('modeBeam').onclick = () => setMode('beam');
+$('modeFrame').onclick = () => setMode('frame');
+Object.keys(FPRESETS).forEach(n => { const b = document.createElement('button'); b.textContent = n; b.onclick = () => { fstate = FPRESETS[n](); fBuild(); fRun(); clearSolvedUI(); }; $('fpresets').appendChild(b); });
+
+// =====================================================================================
+// ===== مكتبة المسائل المحلولة من كتاب Kassimali (الفصل 5) =====
+// كل رقم هنا هو ترقيم تسلسلي للأداة (مسئلة 1، 2 ...) وليس ترقيم الكتاب؛ رقم الكتاب مذكور داخل كل بطاقة.
+// جميع القيم الظاهرة في الشرح مُستخرجة مباشرة من محرك الحل نفسه (لا حسابات يدوية منفصلة) لضمان التطابق التام مع ما يعرضه المخطط.
+// =====================================================================================
+const SOLVED = [
+  { id: 1, label: 'مسئلة 1', ref: 'Problem 5.1 — ص215', mode: 'beam',
+    setup() { state.start = 'pin'; state.mat = null;
+      state.spans = [{ L: 20, end: 'roller', hinge: false, hx: 10, loads: [
+        { t: 'P', x: 5, v: 120 },
+        { t: 'P', x: 10, v: 200 },
+        { t: 'P', x: 15, v: 100, incl: true, ang: 60, hdir: 1, vdir: 1 }
+      ] }];
+      state.markers = [{ label: 'A', x: 8 }, { label: 'B', x: 17 }]; state.qx = 8;
+    },
+    explain: `<h3>كمرة بسيطة (مفصلية + منزلقة) — Problem 5.1</h3>
+      <p>الأحمال: 120kN و200kN رأسيان، وحمل ثالث 100kN بزاوية 60° من الأفقي (مركبته الرأسية = 100sin60° = 86.6kN لأسفل، والأفقية = 100cos60° = 50kN يميناً). طول الكمرة 20m.</p>
+      <div class="tbl"><table><tr><th>النقطة</th><th>N</th><th>V</th><th>M</th></tr>
+      <tr><td><b>A</b> (x=8m)</td><td class="n">50.00 kN (شد)</td><td class="n">91.65 kN</td><td class="n">1333.21 kN·m</td></tr>
+      <tr><td><b>B</b> (x=17m)</td><td class="n">0.00 kN</td><td class="n">-194.95 kN</td><td class="n">584.86 kN·m</td></tr></table></div>
+      <p class="small">القوة المحورية الوحيدة في الكمرة سببها المركبة الأفقية لحمل الـ60°، وتتحملها الركيزة المفصلية بالكامل (المنزلقة لا تقاوم أفقياً)، لذلك N تنعدم بعد نقطة الارتكاز B.</p>`
+  },
+  { id: 2, label: 'مسئلة 2', ref: 'Problem 5.2 — ص215', mode: 'beam',
+    setup() { state.start = 'free'; state.mat = null;
+      state.spans = [{ L: 6, end: 'fixed', hinge: false, hx: 3, loads: [
+        { t: 'P', x: 0, v: 40 },
+        { t: 'P', x: 3, v: 60, incl: true, ang: 60, hdir: 1, vdir: -1 }
+      ] }];
+      state.markers = [{ label: 'A', x: 1.5 }, { label: 'B', x: 4.5 }]; state.qx = 1.5;
+    },
+    explain: `<h3>كمرة مساندة (طرف حر + وثاقة) — Problem 5.2</h3>
+      <p>حمل 40kN لأسفل عند الطرف الحر، وحمل مائل 60kN بزاوية 60° من الأفقي (يميناً وللأعلى) عند منتصف الكمرة تقريباً. لا حاجة لحساب ردود الأفعال أولاً: يكفي جمع ما يقع يسار كل نقطة، لأن الطرف الأيسر حر.</p>
+      <div class="tbl"><table><tr><th>النقطة</th><th>N</th><th>V</th><th>M</th></tr>
+      <tr><td><b>A</b> (x=1.5m)</td><td class="n">0.00 kN</td><td class="n">-40.00 kN</td><td class="n">-60.00 kN·m</td></tr>
+      <tr><td><b>B</b> (x=4.5m)</td><td class="n">-30.00 kN (ضغط)</td><td class="n">11.96 kN</td><td class="n">-102.06 kN·m</td></tr></table></div>
+      <p class="small">العزم سالب في كل الكمرة (شد أعلى) لأنها بروز عن الوثاقة، تماماً كأي ظفر تحت حمل نهايته.</p>`
+  },
+  { id: 3, label: 'مسئلة 3', ref: 'Problem 5.3 — ص215', mode: 'beam',
+    setup() { state.start = 'free'; state.mat = null;
+      state.spans = [{ L: 12, end: 'fixed', hinge: false, hx: 6, loads: [
+        { t: 'M', x: 0, v: -75 },
+        { t: 'P', x: 6, v: 100 }
+      ] }];
+      state.markers = [{ label: 'A', x: 3 }, { label: 'B', x: 9 }]; state.qx = 3;
+    },
+    explain: `<h3>ظفر بعزم مركز عند طرفه الحر — Problem 5.3</h3>
+      <p>عزم مركز 75kN·m عكس عقارب الساعة عند الطرف الحر (x=0)، وحمل مركز 100kN عند منتصف الكمرة (x=6). الوثاقة عند x=12.</p>
+      <div class="tbl"><table><tr><th>النقطة</th><th>V</th><th>M</th></tr>
+      <tr><td><b>A</b> (x=3m)</td><td class="n">0.00 kN</td><td class="n">-75.00 kN·m</td></tr>
+      <tr><td><b>B</b> (x=9m)</td><td class="n">-100.00 kN</td><td class="n">-375.00 kN·m</td></tr></table></div>
+      <p class="small">العزم عند A يساوي العزم المركز نفسه فقط (لا حمل قبله بعد)، وهذا مثال مباشر على القاعدة: «العزم المركز يُحدث قفزة كاملة بمقداره في مخطط العزم».</p>`
+  },
+  { id: 4, label: 'مسئلة 4', ref: 'Problem 5.4 — ص215', mode: 'beam',
+    setup() { state.start = 'fixed'; state.mat = null;
+      state.spans = [{ L: 8, end: 'free', hinge: false, hx: 4, loads: [
+        { t: 'M', x: 4, v: 75 },
+        { t: 'P', x: 8, v: 50, incl: true, ang: 45, hdir: 1, vdir: -1 }
+      ] }];
+      state.markers = [{ label: 'A', x: 2 }, { label: 'B', x: 6 }]; state.qx = 2;
+    },
+    explain: `<h3>كمرة وثاقة وبروز حر — Problem 5.4</h3>
+      <p>وثاقة عند x=0، عزم مركز 75kN·m مع عقارب الساعة عند x=4، وحمل مائل 50kN بزاوية 45° (يميناً وللأعلى) عند الطرف الحر x=8.</p>
+      <div class="tbl"><table><tr><th>النقطة</th><th>N</th><th>V</th><th>M</th></tr>
+      <tr><td><b>A</b> (x=2m)</td><td class="n">35.36 kN (شد)</td><td class="n">-35.36 kN</td><td class="n">137.13 kN·m</td></tr>
+      <tr><td><b>B</b> (x=6m)</td><td class="n">35.36 kN (شد)</td><td class="n">-35.36 kN</td><td class="n">70.71 kN·m</td></tr></table></div>
+      <p class="small">القوة المحورية ثابتة على كامل الكمرة (35.36kN شد) لأنها المركبة الأفقية الوحيدة، ولا يوجد غيرها بين الوثاقة والطرف الحر.</p>`
+  },
+  { id: 5, label: 'مسئلة 5', ref: 'Problem 5.10 — ص216 (عنصر مائل)', mode: 'frame',
+    setup() {
+      fstate = { joints: [{ type: 'free' }, { type: 'roller' }, { type: 'pin' }],
+        members: [
+          { L: 6, ang: -30, loads: [ { x: 0, v: 50, ang: 0, hdir: -1, vdir: 1 }, { x: 0, v: 100, ang: 90, hdir: 1, vdir: 1 } ], udl: null },
+          { L: 18, ang: -30, loads: [ { x: 6, v: 100, ang: 90, hdir: 1, vdir: 1 }, { x: 12, v: 100, ang: 60, hdir: 1, vdir: 1 } ], udl: null }
+        ] };
+      fstate.qm = 0; fstate.qs = 6;
+    },
+    explain: `<h3>عنصر مستقيم مائل بزاوية 30° — Problem 5.10</h3>
+      <p>هذه المسألة عنصرها مائل، لذلك تُفتح في وضع الفريم (وهو يتعامل مع أي عنصر مستقيم بأي زاوية، وليس الفريمات فقط). بروز علوي 6m يحمل 50kN أفقياً و100kN رأسياً عند طرفه الحر، ثم امتداد 18m حتى الركيزة المفصلية، بينهما ركيزة منزلقة عند B وحملان آخران عند A: 100kN رأسي و100kN بزاوية 30° من محور العنصر.</p>
+      <div class="tbl"><table><tr><th>النقطة</th><th>N</th><th>V</th><th>M</th></tr>
+      <tr><td><b>B</b> (من جهة البروز الحر)</td><td class="n">-6.70 kN (ضغط)</td><td class="n">-111.60 kN</td><td class="n">-669.62 kN·m</td></tr>
+      <tr><td><b>A</b> (قبل حمل الـ100kN@30° مباشرة)</td><td class="n">72.17 kN (شد)</td><td class="n">25.00 kN</td><td class="n">149.97 kN·m</td></tr></table></div>
+      <p class="small">النقطتان A وB تقعان بالضبط عند نقطة حمل وعند الركيزة، لذلك القوة N والقص V يقفزان عندهما بمقدار الحمل/الرد؛ أما العزم M فمستمر (بلا قفزة) لأن القفزة في M تحدث فقط عند عزم مركز مطبق.</p>`
+  },
+  { id: 6, label: 'مسئلة 6', ref: 'Example 5.13 — ص202 (فريم)', mode: 'frame',
+    setup() {
+      fstate = { joints: [{ type: 'pin' }, { type: 'free' }, { type: 'free' }, { type: 'roller' }],
+        members: [
+          { L: 7, ang: 90, loads: [], udl: null },
+          { L: 9, ang: 0, loads: [ { x: 0, v: 90, ang: 0, hdir: 1, vdir: 1 } ], udl: { w: 30, dir: 'vert' } },
+          { L: 5, ang: 270, loads: [], udl: null }
+        ] };
+      fstate.qm = 1; fstate.qs = 0;
+    },
+    explain: `<h3>فريم بورتال (مثال محلول 5.13 في الكتاب)</h3>
+      <p>عمود AB رأسي 7m، ثم كمرة BC أفقية 9m عليها حمل موزع 30kN/m، ثم عمود CD رأسي 5m. حمل أفقي 90kN عند الوصلة B. الركيزة A مفصلية، وD منزلقة.</p>
+      <div class="tbl"><table><tr><th>الكمية</th><th>القيمة</th></tr>
+      <tr><td>ردود الأفعال</td><td class="n">Ax=90kN←, Ay=65kN↑, Dy=205kN↑</td></tr>
+      <tr><td>أعلى العمود AB (عند B)</td><td class="n">N=-65kN (ضغط)، V=90kN، M=630kN·m</td></tr>
+      <tr><td>أقصى عزم في الكمرة BC</td><td class="n">700.4 kN·m عند 2.17m من B</td></tr>
+      <tr><td>أسفل العمود CD (عند D)</td><td class="n">N=-205kN (ضغط)، V=0، M=0</td></tr></table></div>
+      <p class="small">هذا هو نفس مثال القسم 5.6 في الكتاب بالضبط؛ استخدم نقطة الاستعلام أدناه لقراءة أي نقطة أخرى بنفس الطريقة (اتزان كامل الفريم لإيجاد الردود، ثم طريقة المقاطع لكل عنصر).</p>`
+  }
+];
+function buildSolvedChips() {
+  const box = $('solvedChips'); box.innerHTML = '';
+  SOLVED.forEach(p => { const b = document.createElement('button'); b.textContent = `${p.label} (${p.ref.split(' — ')[0]})`; b.title = p.ref;
+    b.onclick = () => {
+      document.querySelectorAll('#solvedChips button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+      b.setAttribute('aria-pressed', 'true');
+      p.setup();
+      if (p.mode === 'beam') { setMode('beam', true); build(); run(); } else { setMode('frame', true); fBuild(); fRun(); }
+      $('solvedExplain').innerHTML = p.explain + `<p class="small">${p.ref}، Structural Analysis, Kassimali.</p>`;
+    };
+    box.appendChild(b);
+  });
+}
+buildSolvedChips();
+
+fBuild();
+{ let m0 = 'beam'; try { m0 = localStorage.getItem('lab_mode') || 'beam'; } catch (e) {} if (m0 === 'frame') setMode('frame'); }
+
+</script>
+</body>
+</html>
